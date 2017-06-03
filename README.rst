@@ -11,6 +11,7 @@ A test project for exploring django channles as messaging layer for dashboard pr
 :License: MIT
 
 
+
 Settings
 --------
 
