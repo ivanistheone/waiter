@@ -1,6 +1,7 @@
 
 from channels.routing import route
-channel_routing = [
-    route("http.request", "chaneleria.consumers.http_consumer"),
-]
+from chaneleria.consumers import ws_message
 
+channel_routing = [
+    route("websocket.receive", ws_message),
+]
