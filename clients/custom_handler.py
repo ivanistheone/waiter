@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-
+import datetime
+import json
 import logging
 import time
 
 
+# via https://stackoverflow.com/questions/3118059/how-to-write-custom-python-logging-handler
 class ProgressConsoleHandler(logging.StreamHandler):
     """
     A handler class which allows the cursor to stay on
@@ -32,13 +34,32 @@ class ProgressConsoleHandler(logging.StreamHandler):
             self.handleError(record)
 
 
-if __name__ == '__main__':
-    progress = ProgressConsoleHandler()
+# via http://masnun.com/2015/11/04/python-writing-custom-log-handler-and-formatter.html
+class CustomFormatter(logging.Formatter):
+    def __init__(self, task_name=None):
+        self.task_name = task_name
+        super(CustomFormatter, self).__init__()
+ 
+    def format(self, record):
+        data = {'@message': record.msg % record.args,
+                '@timestamp': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                '@type': 'ricecooker-log-entry'}
+ 
+        if self.task_name:
+            data['@task_name'] = self.task_name
+ 
+        return json.dumps(data)
 
+
+if __name__ == '__main__':
     logger = logging.getLogger('sushi-chef-name')
     logger.setLevel(logging.DEBUG)
-    logger.addHandler(progress)
 
+    progress_handler = ProgressConsoleHandler()
+    formatter = CustomFormatter(task_name='some task name')
+    progress_handler.setFormatter(formatter)
+
+    logger.addHandler(progress_handler)
 
     logger.info('Testing some info message')
 
