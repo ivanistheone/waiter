@@ -1,0 +1,30 @@
+
+# PostgreSQL
+POSTGRES_PASSWORD=postgres
+POSTGRES_USER=postgres
+
+# General settings
+# DJANGO_READ_DOT_ENV_FILE=True
+DJANGO_ADMIN_URL=
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_SECRET_KEY=6fwdxLtS(?H#9(.nupH*iNCYM0GLh7f9KQ%,!bE?o_6thQ4G|J
+DJANGO_ALLOWED_HOSTS=waiter.learningequality.org,localhost,127.0.0.1
+
+# AWS Settings
+DJANGO_AWS_ACCESS_KEY_ID=
+DJANGO_AWS_SECRET_ACCESS_KEY=
+DJANGO_AWS_STORAGE_BUCKET_NAME=
+
+# Used with email
+DJANGO_MAILGUN_API_KEY=
+DJANGO_SERVER_EMAIL=
+MAILGUN_SENDER_DOMAIN=
+
+# Security! Better to use DNS for this task, but you can use redirect
+DJANGO_SECURE_SSL_REDIRECT=False
+
+# django-allauth
+DJANGO_ACCOUNT_ALLOW_REGISTRATION=True
+
+
+
