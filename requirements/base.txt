@@ -7,6 +7,9 @@ wheel==0.29.0
 
 # Bleeding edge Django
 Django==1.11.2
+channels==1.1.3
+psycopg2==2.7.1
+
 
 # Configuration
 django-environ==0.4.3

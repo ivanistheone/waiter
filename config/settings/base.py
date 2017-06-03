@@ -43,6 +43,10 @@ DJANGO_APPS = [
 
     # Admin
     'django.contrib.admin',
+    
+    # Test websocket comms
+    'channels',
+
 ]
 THIRD_PARTY_APPS = [
     'crispy_forms',  # Form layouts
@@ -280,3 +284,10 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        "ROUTING": "chaneleria.routing.channel_routing",
+    },
+}
