@@ -8,8 +8,7 @@ import websocket
 
 class WebsocketLoggingHandler(logging.StreamHandler):
     """
-    A handler class which allows the cursor to stay on
-    one line for selected messages
+    A log handler class that sends logs to `sushibar_host` over WebSockets.
     """
 
     def on_message(self, ws, message):
@@ -52,6 +51,10 @@ class WebsocketLoggingHandler(logging.StreamHandler):
 
 
 class JsonLoggingFormatter(logging.Formatter):
+    """
+    Format logging `LogRecord`s as JSON and add `chef_name` and `log_id` fields.
+    """
+
     def __init__(self, chef_name=None, log_id=None):
         self.chef_name = chef_name
         self.log_id = log_id
