@@ -8,7 +8,7 @@ Production Configurations
 
 """
 
-from boto.s3.connection import OrdinaryCallingFormat
+# from boto.s3.connection import OrdinaryCallingFormat
 
 from os.path import join
 
