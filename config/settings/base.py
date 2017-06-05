@@ -60,6 +60,7 @@ LOCAL_APPS = [
     # custom users app
     'waiter.users.apps.UsersConfig',
     # Your stuff: custom apps go here
+    'runs',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
