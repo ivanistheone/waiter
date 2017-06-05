@@ -90,13 +90,13 @@ INSTALLED_APPS += ['gunicorn', ]
 # MEDIA_URL = 'https://s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
 
 # Static Assets
-# ------------------------
-STATIC_ROOT = join(BASE_DIR, 'djstatic')
-STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-]
-STATIC_URL = '/static/djstatic/'
+# # ------------------------
+# STATIC_ROOT = join(BASE_DIR, 'djstatic')
+# STATICFILES_FINDERS = [
+#     'django.contrib.staticfiles.finders.FileSystemFinder',
+#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+# ]
+# STATIC_URL = '/static/djstatic/'
 
 # STATIC_URL = 'https://s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
 # STATICFILES_STORAGE = 'config.settings.production.StaticRootS3BotoStorage'
