@@ -78,3 +78,8 @@ CELERY_ALWAYS_EAGER = True
 
 # Your local stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+
+
+MEDIA_ROOT = str(APPS_DIR.path('../sushibar_media'))
+# TODO: figure out how django FileSystemStorage works
+# SUSHICHEF_LOGS_SUBDIR_NAME = 'sushichef_logs'
