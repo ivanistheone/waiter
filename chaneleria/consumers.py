@@ -34,7 +34,7 @@ def log_message(message):
     # Recreate the LogRecord object and produce a formatted logline string
     log_record_data = dict(
         name=message_data['name'],
-        level=message_data['levelname'],
+        level=message_data['levelno'],
         pathname=message_data['pathname'],
         lineno=message_data['lineno'],
         msg=message_data['msg'],
