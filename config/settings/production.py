@@ -43,6 +43,7 @@ SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = 'DENY'
+DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
 # SITE CONFIGURATION
 # ------------------------------------------------------------------------------
