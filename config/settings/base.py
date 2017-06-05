@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3  # (waiter/config/settings/base.py - 3 = waiter/)
+BASE_DIR = ROOT_DIR
 APPS_DIR = ROOT_DIR.path('waiter')
 
 # Load operating system environment variables and then prepare to use them
