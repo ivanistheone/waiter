@@ -1,4 +1,6 @@
 venv
+bar
+activate
 
 ### OSX ###
 .DS_Store
@@ -68,4 +70,3 @@ waiter/media/
 staticfiles/
 
 .cache/
-
