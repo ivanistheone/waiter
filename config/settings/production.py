@@ -48,7 +48,7 @@ X_FRAME_OPTIONS = 'DENY'
 # ------------------------------------------------------------------------------
 # Hosts/domain names that are valid for this site
 # See https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['waiter.learningequality.org', ])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['waiter.learningequality.org', 'leq.sidewayspass.com'])
 # END SITE CONFIGURATION
 
 INSTALLED_APPS += ['gunicorn', ]
@@ -135,7 +135,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [
 
 # Use the Heroku-style specification
 # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-DATABASES['default'] = env.db('DATABASE_URL')
+# DATABASES['default'] = env.db('DATABASE_URL')
 
 # CACHING
 # ------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ LOGGING = {
 }
 
 # Custom Admin URL, use {% url 'admin:index' %}
-ADMIN_URL = env('DJANGO_ADMIN_URL')
+# ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
