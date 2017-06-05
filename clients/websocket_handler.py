@@ -23,7 +23,7 @@ class WebsocketLoggingHandler(logging.StreamHandler):
         print('in on_close')
         print("### closed ###")
 
-    def __init__(self, sushibar_host="ws://127.0.0.1:8000/logs"):
+    def __init__(self, sushibar_host):
         logging.StreamHandler.__init__(self)
         print("In WebsocketLoggingHandler __init__ method")
         self.ws = websocket.WebSocketApp(sushibar_host,
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     # STEP 2
     print()
     print("STEP 2: wireup up the websocket logging handler for `log_id` run")
-    websocket_handler = WebsocketLoggingHandler(sushibar_host="ws://127.0.0.1:8000/logs")
+    websocket_handler = WebsocketLoggingHandler(sushibar_host="ws://127.0.0.1:8000/logs/")
     json_formatter = JsonLoggingFormatter(chef_name='some-sushi-chef', log_id=log_id)
     websocket_handler.setFormatter(json_formatter)
     logger.addHandler(websocket_handler)
