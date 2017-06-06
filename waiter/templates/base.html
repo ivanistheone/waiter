@@ -50,7 +50,7 @@
               <li class="active" role="presentation"><a href="{% url 'home' %}">Dashboard </a></li>
                 <li role="presentation"><a href="{% url 'schedule' %}">Schedule</a></li>
                 {% if request.user.is_authenticated %}
-                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" href="#">{% request.user.username %}<span class="caret"></span></a>
+                <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" href="#">{{ request.user.username }}<span class="caret"></span></a>
                   <ul class="dropdown-menu" role="menu">
                     <li role="presentation">
                       <a href="#">Saved Chefs</a>
