@@ -1,0 +1,21 @@
+[
+{
+  "model": "users.user",
+  "pk": 1,
+  "fields": {
+    "password": "argon2$argon2i$v=19$m=512,t=2,p=2$czd5WWZkRTZxbk1Q$5YpbK9fGwRij4o4z9yQ+Qw",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "content@learningequality.org",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2017-06-05T22:44:07.060Z",
+    "name": "",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]
