@@ -2,7 +2,6 @@
 from django.test import TestCase
 
 from runs.models import ContentChannel, ContentChannelRun, RunLogFile
-from django.core.files import File
 
 
 class BasicModelsCreation(TestCase):
@@ -21,7 +20,7 @@ class BasicModelsCreation(TestCase):
         run_ids = [run.id for run in ch.runs.all()]
         self.assertTrue(run.id in run_ids)
 
-        rlf = RunLogFile(run=run, logfile='first_test.log')
+        rlf = RunLogFile(run=run, logfile='name_that_will_be_ignored.log')
         rlf.save()
 
         # write something to logfile
