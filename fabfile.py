@@ -6,7 +6,7 @@ env.hosts = [
 ]
 
 def pull():
-  env.user   = "leq"
+    env.user   = "leq"
     code_dir = '/webapps/leq/waiter'
     with cd(code_dir):
       run("git pull")
