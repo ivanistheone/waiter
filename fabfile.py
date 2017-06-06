@@ -5,6 +5,12 @@ env.hosts = [
     'leq.sidewayspass.com',
 ]
 
+def pull():
+  env.user   = "leq"
+    code_dir = '/webapps/leq/waiter'
+    with cd(code_dir):
+      run("git pull")
+
 def update():
     env.user   = "leq"
     code_dir = '/webapps/leq/waiter'
