@@ -117,6 +117,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': env.db('DATABASE_URL', default='postgres://localhost/waiter'),
 }
+
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 
