@@ -52,4 +52,5 @@ redis>=2.10.5
 
 
 # Your custom requirements go here
+djangorestframework==3.6.3
 

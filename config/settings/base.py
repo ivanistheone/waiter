@@ -47,6 +47,7 @@ DJANGO_APPS = [
     
     # Test websocket comms
     'channels',
+    'rest_framework',
 
 ]
 THIRD_PARTY_APPS = [
