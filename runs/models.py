@@ -10,6 +10,7 @@ from django.utils.translation import ugettext as _
 RUN_SCHEDULED = 'SCHEDULED'
 RUN_CREATED = 'CREATED'
 RUN_STARTED = 'STARTED'
+# add states for intermediate steps of the sushi chef?
 RUN_RUNNING = 'RUNNING'
 RUN_FINISHED = 'FINISHED'
 RUN_ERROR = 'ERROR'
@@ -22,27 +23,13 @@ CHANNEL_RUN_STATES = (
     (RUN_ERROR, 'Error'),
 )
 
-class LEUUIDField(models.CharField):
-    """
-    Custom field for storing UUIDs as strings.
-    """
-    def __init__(self, *args, **kwargs):
-        kwargs['max_length'] = 32
-        super(LEUUIDField, self).__init__(*args, **kwargs)
-
-    def get_default(self):
-        result = super(LEUUIDField, self).get_default()
-        if isinstance(result, uuid.UUID):
-            result = result.hex
-        return result
-
 
 class ContentChannel(models.Model):
     """
     The sushibar contect channel representation.
     """
     # id = local, implicit, autoincrementing integer primary key
-    channel_id = LEUUIDField('The id from contentcuration.models.Channel')
+    channel_id = models.UUIDField('The id from contentcuration.models.Channel')
     name = models.CharField(max_length=200, blank=True)  # equiv to ricecooker's `title`
     description = models.CharField(max_length=400, blank=True)
     version = models.IntegerField(default=0)
@@ -56,14 +43,15 @@ class ContentChannel(models.Model):
     # Content curation related fields
     content_server = models.URLField(max_length=300, default='https://develop.contentworkshop.learningequality.org')
 
-
+    def __str__(self):
+        return '<Channel ' + self.channel_id.hex[:8] + '...>'
 
 
 class ContentChannelRun(models.Model):
     """
     A particular sushi chef run for the content channel `channel`.
     """
-    run_id = LEUUIDField(primary_key=True, default=uuid.uuid4)
+    run_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     channel = models.ForeignKey(ContentChannel, on_delete=models.CASCADE, related_name='runs')
     chef_name = models.CharField(max_length=200)
     ricecooker_version = models.CharField(max_length=100, blank=True, null=True)
@@ -81,6 +69,8 @@ class ContentChannelRun(models.Model):
     #   - Errors
     #   - Store command-line toggles: --staging / --publish / --update
 
+    def __str__(self):
+        return '<Run ' + self.run_id.hex[:8] + '...>'
 
 
 class ChannelRunEvent(models.Model):
@@ -93,7 +83,9 @@ class ChannelRunEvent(models.Model):
     progress = models.FloatField(blank=True, null=True)
     timestamp = models.DateTimeField()
 
-
+    def __str__(self):
+        return '<Event for run ' + self.run.run_id.hex[:8] + '...>'
+    
 
 def log_filename_for_run(instance, filename):
     """
@@ -109,3 +101,6 @@ class ChannelRunLog(models.Model):
     # id = local, implicit, autoincrementing integer primary key
     run = models.OneToOneField(ContentChannelRun, on_delete=models.CASCADE, related_name='runlog')
     logfile = models.FileField(upload_to=log_filename_for_run, verbose_name='Log file from the sushi chef run.')
+
+    def __str__(self):
+        return '<RunLog for run ' + self.run.run_id.hex[:8] + '...>'
