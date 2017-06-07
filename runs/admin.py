@@ -20,6 +20,8 @@ class ChannelRunEventInline(admin.TabularInline):
 
 @admin.register(ContentChannelRun)
 class ContentChannelRunAdmin(admin.ModelAdmin):
+    def channel_id(self, obj):
+        return obj.channel.channel_id
     inlines = [ChannelRunLogInline, ChannelRunEventInline]
     list_display = ('run_id', 'state', 'channel_id', 'chef_name', 'runlog', 'started', 'finished')
 
