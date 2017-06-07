@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ContentChannel, ContentChannelRun, RunLogFile, ChannelRunEvent
+from .models import ContentChannel, ContentChannelRun, ChannelRunLog, ChannelRunEvent
 
 
 @admin.register(ContentChannel)
@@ -10,8 +10,8 @@ class ContentChannelAdmin(admin.ModelAdmin):
 
 
 
-class RunLogFileInline(admin.StackedInline): # TabularInline):
-    model = RunLogFile
+class ChannelRunLogInline(admin.StackedInline): # TabularInline):
+    model = ChannelRunLog
     extra = 0
 
 class ChannelRunEventInline(admin.TabularInline):
@@ -20,6 +20,6 @@ class ChannelRunEventInline(admin.TabularInline):
 
 @admin.register(ContentChannelRun)
 class ContentChannelRunAdmin(admin.ModelAdmin):
-    inlines = [RunLogFileInline, ChannelRunEventInline]
-    list_display = ('id', 'state', 'channel_id', 'chef_name', 'logfile', 'started', 'finished')
+    inlines = [ChannelRunLogInline, ChannelRunEventInline]
+    list_display = ('run_id', 'state', 'channel_id', 'chef_name', 'runlog', 'started', 'finished')
 
