@@ -22,13 +22,27 @@ CHANNEL_RUN_STATES = (
     (RUN_ERROR, 'Error'),
 )
 
+class LEUUIDField(models.CharField):
+    """
+    Custom field for storing UUIDs as strings.
+    """
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 32
+        super(LEUUIDField, self).__init__(*args, **kwargs)
+
+    def get_default(self):
+        result = super(LEUUIDField, self).get_default()
+        if isinstance(result, uuid.UUID):
+            result = result.hex
+        return result
+
 
 class ContentChannel(models.Model):
     """
     The sushibar contect channel representation.
     """
     # id = local, implicit, autoincrementing integer primary key
-    channel_id = models.UUIDField('The id from contentcuration.models.Channel', default=uuid.uuid4)
+    channel_id = LEUUIDField('The id from contentcuration.models.Channel')
     name = models.CharField(max_length=200, blank=True)  # equiv to ricecooker's `title`
     description = models.CharField(max_length=400, blank=True)
     version = models.IntegerField(default=0)
@@ -49,7 +63,7 @@ class ContentChannelRun(models.Model):
     """
     A particular sushi chef run for the content channel `channel`.
     """
-    # id = local, implicit, autoincrementing integer primary key
+    run_id = LEUUIDField(primary_key=True, default=uuid.uuid4)
     channel = models.ForeignKey(ContentChannel, on_delete=models.CASCADE, related_name='runs')
     chef_name = models.CharField(max_length=200)
     ricecooker_version = models.CharField(max_length=100, blank=True, null=True)
@@ -73,24 +87,25 @@ class ChannelRunEvent(models.Model):
     """
     Represents lifecycle events for a given channel run.
     """
+    # id = local, implicit, autoincrementing integer primary key
     run = models.ForeignKey(ContentChannelRun, on_delete=models.CASCADE, related_name='events')
+    event = models.CharField(max_length=100)
+    progress = models.FloatField(blank=True, null=True)
     timestamp = models.DateTimeField()
-    kind = models.CharField(max_length=50)
-    chef_name = models.CharField(max_length=200)  # needed?
 
 
 
 def log_filename_for_run(instance, filename):
     """
-    Generate the log filename based on `channel_id` and `run.id`.
+    Generate the log filename based on `channel_id` and `run_id`.
     """
     # Run logfile will be saved in MEDIA_ROOT/sushicheflogs/channel_id/run_id.log
-    return 'sushicheflogs/{0}/{1}.log'.format(instance.run.channel.channel_id, instance.run.id)
+    return 'sushicheflogs/{0}/{1}.log'.format(instance.run.channel.channel_id, instance.run.run_id)
 
-class RunLogFile(models.Model):
+class ChannelRunLog(models.Model):
     """
-    The log file for the content channel run `run`.
+    Stores the log file for the content channel run `run`.
     """
     # id = local, implicit, autoincrementing integer primary key
-    run = models.OneToOneField(ContentChannelRun, on_delete=models.CASCADE, related_name='logfile')
+    run = models.OneToOneField(ContentChannelRun, on_delete=models.CASCADE, related_name='runlog')
     logfile = models.FileField(upload_to=log_filename_for_run, verbose_name='Log file from the sushi chef run.')

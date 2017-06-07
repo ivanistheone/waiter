@@ -1,7 +1,7 @@
 
 from django.test import TestCase
 
-from runs.models import ContentChannel, ContentChannelRun, RunLogFile
+from runs.models import ContentChannel, ContentChannelRun, ChannelRunLog
 
 
 class BasicModelsCreation(TestCase):
@@ -17,18 +17,18 @@ class BasicModelsCreation(TestCase):
         run.save()
 
         # check ch.runs populated
-        run_ids = [run.id for run in ch.runs.all()]
-        self.assertTrue(run.id in run_ids)
+        run_ids = [run.run_id for run in ch.runs.all()]
+        self.assertTrue(run.run_id in run_ids)
 
-        rlf = RunLogFile(run=run, logfile='name_that_will_be_ignored.log')
-        rlf.save()
+        runlog = ChannelRunLog(run=run, logfile='name_that_will_be_ignored.log')
+        runlog.save()
 
         # write something to logfile
-        with open(rlf.logfile.path, 'w') as log_file:
+        with open(runlog.logfile.path, 'w') as log_file:
             log_file.write('A test line UNIQUESTRING94913 added manually\n')
 
         # check if it workded
-        with open(rlf.logfile.path, 'r') as log_file:
+        with open(runlog.logfile.path, 'r') as log_file:
             print(log_file.read())
             log_contents = log_file.read()
             self.assertIn(log_contents, "UNIQUESTRING94913")
