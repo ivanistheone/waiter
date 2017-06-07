@@ -7,14 +7,13 @@ from .models import ContentChannel, ContentChannelRun, ChannelRunLog, ChannelRun
 
 
 class ContentChannelSerializer(serializers.ModelSerializer):
+    channel_id = serializers.UUIDField(format='hex')
     class Meta:
         model = ContentChannel
-        # fields = '__all__'
         fields = ('channel_id', 'name', 'description', 'version', 'source_domain', 'source_id', 'user_registered_by', 'content_server')
 
-
 class ContentChannelCreateSerializer(serializers.Serializer):
-    channel_id = serializers.UUIDField()
+    channel_id = serializers.UUIDField(format='hex')
     name = serializers.CharField(max_length=200, allow_blank=True)  # equiv to ricecooker's `title`
     description = serializers.CharField(max_length=400, allow_blank=True)
     version = serializers.IntegerField(default=0)
@@ -32,31 +31,63 @@ class ContentChannelCreateSerializer(serializers.Serializer):
 
 
 
+
 class ContentChannelRunSerializer(serializers.ModelSerializer):
-    channel = ContentChannelSerializer()
+    run_id = serializers.UUIDField(format='hex', read_only=True)
+    channel = ContentChannelSerializer(read_only=True)
     class Meta:
         model = ContentChannelRun
         fields = ('run_id', 'channel', 'chef_name', 'ricecooker_version', 'state', 'started', 'finished', 'duration')
 
-class ContentChannelRunCreateSerializer(serializers.Serializer):
-    channel_id = serializers.CharField(write_only=True)      # need to supply channel_id when creating run  
+class ContentChannelRunCreateSerializer(serializers.ModelSerializer):
+    run_id = serializers.UUIDField(format='hex', read_only=True)
+    channel_id = serializers.UUIDField(format='hex', write_only=True)   # need to supply channel_id when creating run
     channel = ContentChannelSerializer(read_only=True)
-    run_id = serializers.CharField(read_only=True)
-    chef_name = serializers.CharField(max_length=200)
-    ricecooker_version = serializers.CharField(max_length=100)
-    # Denormalized info extracted from run events table
-    state = serializers.CharField(read_only=True)
-    started = serializers.DateTimeField(read_only=True)
-    finished = serializers.DateTimeField(read_only=True)
-    duration = serializers.DurationField(read_only=True)
+    # hostname ??? --> to store where sushi chef is running ???
+
+    class Meta:
+        model = ContentChannelRun
+        read_only_fields = ('run_id', 'channel', 'state', 'started', 'finished', 'duration')
+        fields = ('run_id', 'channel_id', 'channel', 'chef_name', 'ricecooker_version')
 
     def create(self, validated_data):
         """
         Create and return a new `ContentChannel` instance, given the validated data.
         """
-        channel = ContentChannel.objects.get(channel_id=validated_data['channel_id'])
-        del validated_data['channel_id']
+        channel_id = validated_data.pop('channel_id')
+        channel = ContentChannel.objects.get(channel_id=channel_id)
         channel_run = ContentChannelRun.objects.create(channel=channel, **validated_data)
-        runlog = ChannelRunLog(run=channel_run)
+        runlog = ChannelRunLog(run=channel_run)   # manually create runlog once we know the run_id
         runlog.save()
         return channel_run
+
+
+
+
+
+
+
+class ChannelRunEventSerializer(serializers.ModelSerializer):
+    run_id = serializers.UUIDField(source='run.run_id', format='hex', read_only=True)
+    class Meta:
+        model = ChannelRunEvent
+        fields = ('id', 'run_id', 'event', 'progress', 'timestamp')
+
+class ChannelRunEventCreateSerializer(serializers.ModelSerializer):
+    run_id = serializers.UUIDField(format='hex')
+
+    class Meta:
+        model = ChannelRunEvent
+        read_only_fields = ('id', )
+        fields = ('id', 'run_id', 'event', 'progress', 'timestamp')
+
+    def create(self, validated_data):
+        """
+        Create and return a new `ContentChannel` instance, given the validated data.
+        """
+        run_id = validated_data.pop('run_id')
+        run = ContentChannelRun.objects.get(run_id=run_id)
+        event = ChannelRunEvent.objects.create(run=run, **validated_data)
+        return event
+
+

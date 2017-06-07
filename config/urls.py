@@ -35,3 +35,10 @@ if settings.DEBUG:
         urlpatterns = [
             url(r'^__debug__/', include(debug_toolbar.urls)),
         ] + urlpatterns
+    if 'rest_framework_swagger' in settings.INSTALLED_APPS:
+        from rest_framework_swagger.views import get_swagger_view
+        schema_view = get_swagger_view(title='Sushi Bar API')
+
+        urlpatterns += [
+            url(r'^apidocs/$', schema_view)
+        ]
