@@ -3,7 +3,7 @@ import uuid
 
 from rest_framework import serializers
 
-from .models import ContentChannel, ContentChannelRun, ChannelRunLog, ChannelRunEvent
+from .models import ContentChannel, ContentChannelRun, ChannelRunStage
 
 
 
@@ -11,8 +11,8 @@ class ContentChannelSerializer(serializers.ModelSerializer):
     channel_id = serializers.UUIDField(format='hex')
     class Meta:
         model = ContentChannel
-        fields = ('channel_id', 'name', 'description', 'version', 'source_domain', 'source_id', 'user_registered_by', 'content_server')
-
+        fields = ('channel_id', 'name', 'description', 'version', 'source_domain', 'source_id',
+                  'registered_by_user', 'registered_by_user_token', 'default_content_server')
 
 
 class ContentChannelRunSerializer(serializers.ModelSerializer):
@@ -23,8 +23,13 @@ class ContentChannelRunSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ContentChannelRun
-        read_only_fields = ('run_id', 'channel', 'state', 'started', 'finished', 'duration')
-        fields = ('run_id', 'channel_id', 'channel', 'chef_name', 'ricecooker_version', 'state', 'started', 'finished', 'duration')
+        read_only_fields = ('run_id', 'channel')
+        fields = ('run_id', 'channel_id', 'channel', 'chef_name', 'ricecooker_version',
+                  'logfile', 'resource_counts', 'resource_sizes', 'extra_options',
+                  'started_by_user', 'started_by_user_token', 'content_server', )
+
+# Extra optional attributes like error counts, and command-line toggles (--staging / --publish / --update)
+
 
     def create(self, validated_data):
         """
@@ -33,25 +38,10 @@ class ContentChannelRunSerializer(serializers.ModelSerializer):
         channel_id = validated_data.pop('channel_id')
         channel = ContentChannel.objects.get(channel_id=channel_id)
         channel_run = ContentChannelRun.objects.create(channel=channel, **validated_data)
-        runlog = ChannelRunLog(run=channel_run)   # manually create runlog once we know the run_id
-        runlog.save()
+        channel_run.save() # save again to greate runlog file with right filename
         return channel_run
 
 
 
-class ChannelRunEventSerializer(serializers.ModelSerializer):
-    run_id = serializers.UUIDField(format='hex')
-    class Meta:
-        model = ChannelRunEvent
-        fields = ('id', 'run_id', 'event', 'progress', 'timestamp')
-
-    def create(self, validated_data):
-        """
-        Create and return a new `ContentChannelRun` instance, given the validated data.
-        """
-        run_id = validated_data.pop('run_id')
-        run = ContentChannelRun.objects.get(run_id=run_id)
-        event = ChannelRunEvent.objects.create(run=run, **validated_data)
-        return event
-
-
+class ChannelRunStageCreateSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
