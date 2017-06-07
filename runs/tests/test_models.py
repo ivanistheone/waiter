@@ -1,4 +1,6 @@
 
+import uuid
+
 from django.test import TestCase
 
 from runs.models import ContentChannel, ContentChannelRun, ChannelRunLog
@@ -10,7 +12,8 @@ class BasicModelsCreation(TestCase):
         """
         MMMMMMVT for object creation and related fields work as expected.
         """
-        ch = ContentChannel()
+        random_uuid = uuid.uuid4()
+        ch = ContentChannel(channel_id=random_uuid)
         ch.save()
 
         run = ContentChannelRun(channel=ch)
@@ -32,3 +35,8 @@ class BasicModelsCreation(TestCase):
             print(log_file.read())
             log_contents = log_file.read()
             self.assertIn(log_contents, "UNIQUESTRING94913")
+
+        self.assertTrue(runlog.run == run)
+        self.assertTrue(runlog.run.channel == ch)
+        self.assertTrue(runlog.run.channel.channel_id == ch.channel_id)
+
