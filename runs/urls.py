@@ -2,13 +2,13 @@ from django.conf.urls import url
 from rest_framework.schemas import get_schema_view
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from .api import ContentChannelList, ContentChannelDetail, RunsForContentChannelList
+from .api import ContentChannelListCreate, ContentChannelDetail, RunsForContentChannelList
 from .api import ContentChannelRunListCreate, ContentChannelRunDetail
 from .api import ChannelRunEventListCreate
 
 urlpatterns = [
     url(regex=r'channels/$',
-        view=ContentChannelList.as_view(),
+        view=ContentChannelListCreate.as_view(),
         name='list_details'),
     #
     url(regex=r'channels/(?P<channel_id>[0-9A-Fa-f-]+)/$',
