@@ -1,27 +1,24 @@
 from django.contrib import admin
 
-from .models import ContentChannel, ContentChannelRun, ChannelRunLog, ChannelRunEvent
+from .models import ContentChannel, ContentChannelRun, ChannelRunStage
 
 
 @admin.register(ContentChannel)
 class ContentChannelAdmin(admin.ModelAdmin):
-    list_display = ('id', 'channel_id', 'name', 'version', 'source_id', 'source_domain', 'user_registered_by')
+    list_display = ('id', 'channel_id', 'name', 'version', 'source_id', 'source_domain',
+                    'registered_by_user', 'registered_by_user_token', 'default_content_server')
     search_fields = ['name', 'source_domain']
 
 
 
-class ChannelRunLogInline(admin.StackedInline): # TabularInline):
-    model = ChannelRunLog
-    extra = 0
-
-class ChannelRunEventInline(admin.TabularInline):
-    model = ChannelRunEvent
-    list_display = ('id', 'chef_name', 'run_id', 'timestamp', 'kind')
+class ChannelRunStageInline(admin.TabularInline):
+    model = ChannelRunStage
+    list_display = ('id', 'name', 'started', 'finished', 'duration')
 
 @admin.register(ContentChannelRun)
 class ContentChannelRunAdmin(admin.ModelAdmin):
     def channel_id(self, obj):
         return obj.channel.channel_id
-    inlines = [ChannelRunLogInline, ChannelRunEventInline]
-    list_display = ('run_id', 'state', 'channel_id', 'chef_name', 'runlog', 'started', 'finished')
+    inlines = [ChannelRunStageInline, ]
+    list_display = ('run_id', 'channel_id', 'chef_name', 'logfile')
 

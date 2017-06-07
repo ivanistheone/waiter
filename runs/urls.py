@@ -4,7 +4,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from .api import ContentChannelListCreate, ContentChannelDetail, RunsForContentChannelList
 from .api import ContentChannelRunListCreate, ContentChannelRunDetail
-from .api import ChannelRunEventListCreate
+from .api import ChannelRunStageCreate
 
 urlpatterns = [
     url(regex=r'channels/$',
@@ -28,9 +28,9 @@ urlpatterns = [
         view=ContentChannelRunDetail.as_view(),
         name='run_details'),
     #
-    url(regex=r'channelruns/(?P<run_id>[0-9A-Fa-f-]+)/events/$',
-        view=ChannelRunEventListCreate.as_view(),
-        name='events_for_run'),
+    url(regex=r'channelruns/(?P<run_id>[0-9A-Fa-f-]+)/stages/$',
+        view=ChannelRunStageCreate.as_view(),
+        name='run_stage_notify'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

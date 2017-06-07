@@ -6,8 +6,8 @@ from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import ContentChannel, ContentChannelRun, ChannelRunLog, ChannelRunEvent
-from .serializers import ContentChannelSerializer, ContentChannelRunSerializer, ChannelRunEventSerializer
+from .models import ContentChannel, ContentChannelRun, ChannelRunStage
+from .serializers import ContentChannelSerializer, ContentChannelRunSerializer, ChannelRunStageCreateSerializer
 
 
 # CONTENT CHANNELS #############################################################
@@ -83,9 +83,9 @@ class ContentChannelRunDetail(APIView):
         serializer = ContentChannelRunSerializer(run)
         return Response(serializer.data)
 
-    def put(self, request, run_id, format=None):
+    def patch(self, request, run_id, format=None):
         run = self.get_object(run_id)
-        serializer = ContentChannelRunSerializer(run, data=request.data)
+        serializer = ContentChannelRunSerializer(run, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -96,29 +96,19 @@ class ContentChannelRunDetail(APIView):
         run.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+ 
+# CHANNEL RUN STAGES ###########################################################
 
-
-# CHANNEL RUN EVENTS ###########################################################
-
-class ChannelRunEventListCreate(APIView):
+class ChannelRunStageCreate(APIView):
     """
-    GET:  list all events for run `run_id`
-    POST: create a new event for run `run_id`
+    POST: notify sushibar of a given sushichef event for `run_id`.
     """
-    def get(self, request, run_id, format=None):
-        try:
-            run = ContentChannelRun.objects.get(run_id=run_id)
-        except ContentChannelRun.DoesNotExist:
-            raise Http404
-        serializer = ChannelRunEventSerializer(run.events, many=True)
-        return Response(serializer.data)
-
     def post(self, request, run_id, format=None):
-        """
-        Create a new channel run.
-        """
-        serializer = ChannelRunEventSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(request.data)
+        serializer = ChannelRunStageCreateSerializer(data=request.data)
+        # print(serializer.data)
+        return Response({"ok":True}, status=status.HTTP_201_CREATED)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
