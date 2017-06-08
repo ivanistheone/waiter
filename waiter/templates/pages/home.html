@@ -31,7 +31,7 @@
             <a class="btn btn-{{channel.stop_color}} btn-sm"><em class="fa fa-stop"></em></a>
           </td>
           <td><a href="{{channel.channel_url}}">{{channel.channel}} →</a></td>
-          <td>{{channel.id}}</td>
+          <td><button class="channel-id-btn btn btn-sm btn-success" data-toggle="tooltip" data-placement="right" title="Copied!" data-trigger="click" data-clipboard-text="{{channel.id}}">Copy</button></td>
           <td>{{channel.last_run}}</td> 
           <td>{{channel.duration}}</td>
           <td>
@@ -39,7 +39,7 @@
               <div class="progress-bar progress-bar-striped bg-{{channel.run_status}}" aria-valuenow="{{channel.status_pct}}" aria-valuemin="0" aria-valuemax="100" style="width: {{channel.status_pct}}%;">{{channel.status}}</div>
             </div>
           </td>
-          <td><a class="btn btn-sm btn-{{channel.run_status}}" href="errors.html">{{channel.num_errors}}  →</a></td>
+          <td><a class="btn btn-sm btn-{{channel.run_status}}" href="/errors/{{channel.last_run_id}}/">{{channel.num_errors}}  →</a></td>
         </tr>
         {% endfor %}
       </tbody>
@@ -54,6 +54,7 @@
 <script>
 var channels = [{{jschannels}}];
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.6.1/clipboard.min.js"></script>
 <script src="{% static 'js/typeahead.bundle.min.js' %}"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

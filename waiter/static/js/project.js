@@ -19,3 +19,11 @@ Issues with the above approach:
 4. Undocumented: No mention in the documentation, or it's too hard for me to find
 */
 $('.form-group').removeClass('row');
+
+// This is super janky, remove it after creating endpoint to get
+// channels.
+$(function() {
+  if (typeof channels === 'undefined') {
+    $("#search-form").hide();
+  }
+});

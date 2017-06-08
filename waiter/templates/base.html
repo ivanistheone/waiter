@@ -40,7 +40,7 @@
           </button>
           <a class="navbar-brand navbar-link" href="{% url 'home' %}">Sushi Bar</a>
           <div class="collapse navbar-collapse" id="navbar-items">
-            <form class="form-inline my-2 my-lg-2" target="_self">
+            <form id="search-form" class="form-inline my-2 my-lg-2" target="_self">
               <div class="form-group">
                 <span class="input-group-addon" id="search-icon"><i class="fa fa-search"></i></span>
                 <input class="form-control typeahead" placeholder="Search" type="text" aria-described-by="search-icon" id="search-input">
@@ -54,16 +54,16 @@
               <a class="nav-link" href="{% url 'schedule' %}">Schedule</a>
             </li>
               {% if request.user.is_authenticated %}
-              <li class="nav-item dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" href="#">{{ request.user.username }}<span class="caret"></span></a>
+              <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="true" href="#">{{ request.user.username }}<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                   <li role="presentation">
-                    <a href="#">Saved Chefs</a>
+                    <a class="nav-link" href="#">Saved Chefs</a>
                   </li>
                   <li role="presentation">
                     <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
                   </li>
                   <li role="presentation">
-                    <a href="{% url 'account_logout' %}">Logout </a>
+                    <a class="nav-link" href="{% url 'account_logout' %}">Logout </a>
                   </li>
                 </ul>
               </li>
@@ -118,8 +118,6 @@
     <!-- place project specific Javascript in this file -->
 
     <script src="{% static 'js/project.js' %}"></script>
-
-
     {% endblock javascript %}
   </body>
   </html>

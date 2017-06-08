@@ -17,7 +17,8 @@ def get_mock(**kwargs):
         "status": kwargs.get('status', 'Completed'),
         "status_pct": kwargs.get('status_pct', 100),
         "num_errors": kwargs.get('num_errors', 0),
-        "run_status": kwargs.get('run_status', 'success')
+        "run_status": kwargs.get('run_status', 'success'),
+        "last_run_id": 1
     }
 
 class DashboardView(TemplateView):
@@ -35,16 +36,28 @@ class DashboardView(TemplateView):
             # TODO(arvnd): add active bit to channel model and 
             # split on that.
             last_run = ContentChannelRun.objects.filter(channel__channel_id=channel.channel_id)[:1]
-            context['inactive_channels'].append({
+            if not len(last_run):
+                print("No runs for channel %s " % channel.name)
+                continue
+            last_run = last_run[0]
+            last_event = ChannelRunStage.objects.filter(run_id=last_run.run_id)[:1]
+            if not len(last_event):
+                print("No events for run %s" % last_run.run_id)
+                continue
+
+            last_event = last_event[0]
+
+            context['channels']['Inactive Channels'].append({
                     "channel": channel.name,
                     "channel_url": "%s/%s/edit" % (channel.default_content_server, channel.channel_id),
                     "restart_color": 'secondary',
                     "stop_color": "secondary",
                     "id": channel.channel_id,
-                    "last_run": datetime.strftime("%b %w, %H:%M",last_run.events[-1].finished),
+                    "last_run": datetime.strftime(last_event.finished, "%b %w, %H:%M"),
+                    "last_run_id": last_run.run_id,
                     # do we have an overall event or do we have to sum these?
                     "duration": "0",
-                    "status": last_run.events[-1].name,
+                    "status": last_event.name,
                     # TODO
                     "status_pct": 100,
                     "num_errors": 0,

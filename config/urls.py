@@ -6,11 +6,14 @@ from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
 from waiter.dashboards.views import DashboardView
+from waiter.errors.views import RunErrorsView
 
 urlpatterns = [
     url(r'^$', DashboardView.as_view(template_name='pages/home.html'), name='home'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
     url(r'^schedule/$', TemplateView.as_view(template_name='pages/schedule.html'), name='schedule'),
+    # TODO: this is a bad regex, use a better one that matches UUID4
+    url(r'^errors/(?P<runid>.+)/$', RunErrorsView.as_view(template_name='pages/errors.html'), name='errors'),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
