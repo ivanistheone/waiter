@@ -45,7 +45,7 @@ DJANGO_APPS = [
     'django.contrib.admin',
     
     # Test websocket comms
-    'channels',
+    #'channels',
     'rest_framework',
 
 ]

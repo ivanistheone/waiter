@@ -21,4 +21,5 @@ pytest-sugar==0.8.0
 
 # For websocket clients in clients/ dir
 websocket-client==0.40.0
-websockets==3.3
+django-rest-swagger==2.1.2
+
