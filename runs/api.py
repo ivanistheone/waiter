@@ -1,6 +1,7 @@
 
 from datetime import timedelta
 
+from django.conf import settings
 from django.http import Http404
 from django.utils import timezone
 from rest_framework import status
@@ -14,7 +15,16 @@ from .serializers import ContentChannelSerializer
 from .serializers import ContentChannelRunSerializer
 from .serializers import ChannelRunStageCreateSerializer, ChannelRunStageSerializer
 from .serializers import ChannelRunLogMessageCreateSerializer
-from .serializers import ChannelRunProgressReceiveSerializer
+from .serializers import ChannelRunProgressSerializer
+
+
+# REDIS connection #############################################################
+import redis
+REDIS = redis.StrictRedis(host=settings.MMVP_REDIS_HOST,
+                          port=settings.MMVP_REDIS_PORT,
+                          db=settings.MMVP_REDIS_DB)
+
+
 
 # CONTENT CHANNELS #############################################################
 
@@ -160,40 +170,38 @@ class ChannelRunLogMessageCreate(APIView):
 
 
 
-# CHANNEL RUN PROGRESS #########################################################
 
-class ChannelRunProgressViews(APIView):
+# CHANNEL RUN PROGRESS #########################################################
+# Temporary hack for MMVP --- manually store/retrieve progress in redis
+# this will be repalced with channels implementation for final version
+
+class ChannelRunProgressEndpoints(APIView):
 
     def get(self, request, run_id, format=None):
         """
         Return current progress from redis.
         """
-        print('Reading from redis...')
-        # INSERT REDIS RETRIEVE CODE HERE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-        return Response({'progress':0.0})
-
-
-
+        progress_value_types = [str, str, float]
+        progress_keys = ['run_id', 'stage', 'progress']
+        raw_values = REDIS.hmget(run_id, progress_keys)
+        if None in raw_values:
+            raise Http404
+        raw_values_str = [item.decode('utf-8') for item in raw_values]
+        keys_values_list = []
+        for t, key, val in zip(progress_value_types, progress_keys, raw_values_str):
+            keys_values_list.append( (key, t(val)) )
+        progress_data_dict = dict(keys_values_list)
+        serializer = ChannelRunProgressSerializer(progress_data_dict)
+        return Response(serializer.data)
 
     def post(self, request, run_id, format=None):
         """
         Store progress update to redis.
         """
-        serializer = ChannelRunProgressReceiveSerializer(data=request.data)
+        serializer = ChannelRunProgressSerializer(data=request.data)
         if serializer.is_valid():
-            print('Storing to redis...')
-            # here you can be sure that serializer.data is valid 
-            # {
-            #    "run_id": "f2c0906a77ce4651b5aedaa2b25bb3d9",
-            #    "stage": "Stage.SOMESTAGENAME",
-            #    "progress": 0.3,     # could be fraction of one or percentage
-            # }
-            print(serializer.data)
-            # INSERT REDIS STORE CODE HERE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-
-            return Response({'result':'success'}, status=status.HTTP_201_CREATED)
+            REDIS.hmset(run_id, serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 

@@ -286,3 +286,10 @@ CHANNEL_LAYERS = {
         "ROUTING": "chaneleria.routing.channel_routing",
     },
 }
+
+
+# Settings for storing progress in redis  (used for sushichef MMVP)
+MMVP_REDIS_HOST = 'localhost'
+MMVP_REDIS_PORT = 6379
+MMVP_REDIS_DB = 0
+

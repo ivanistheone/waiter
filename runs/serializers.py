@@ -82,7 +82,7 @@ class ChannelRunLogMessageCreateSerializer(serializers.Serializer):
 
 
 
-class ChannelRunProgressReceiveSerializer(serializers.Serializer):
+class ChannelRunProgressSerializer(serializers.Serializer):
     """
     Run progress messages are of the form:
     {
