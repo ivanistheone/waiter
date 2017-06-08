@@ -8,8 +8,9 @@ Production Configurations
 
 """
 
-from boto.s3.connection import OrdinaryCallingFormat
+# from boto.s3.connection import OrdinaryCallingFormat
 
+from os.path import join
 
 from .base import *  # noqa
 
@@ -38,16 +39,17 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 SECURE_BROWSER_XSS_FILTER = True
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
-SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
+# SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = 'DENY'
+DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
 # SITE CONFIGURATION
 # ------------------------------------------------------------------------------
 # Hosts/domain names that are valid for this site
 # See https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['waiter.learningequality.org', ])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['waiter.learningequality.org', 'leq.sidewayspass.com'])
 # END SITE CONFIGURATION
 
 INSTALLED_APPS += ['gunicorn', ]
@@ -89,13 +91,13 @@ INSTALLED_APPS += ['gunicorn', ]
 # MEDIA_URL = 'https://s3.amazonaws.com/%s/media/' % AWS_STORAGE_BUCKET_NAME
 
 # Static Assets
-# ------------------------
-STATIC_ROOT = join(BASE_DIR, 'djstatic')
-STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-]
-STATIC_URL = '/static/djstatic/'
+# # ------------------------
+# STATIC_ROOT = join(BASE_DIR, 'djstatic')
+# STATICFILES_FINDERS = [
+#     'django.contrib.staticfiles.finders.FileSystemFinder',
+#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+# ]
+# STATIC_URL = '/static/djstatic/'
 
 # STATIC_URL = 'https://s3.amazonaws.com/%s/static/' % AWS_STORAGE_BUCKET_NAME
 # STATICFILES_STORAGE = 'config.settings.production.StaticRootS3BotoStorage'
@@ -113,12 +115,12 @@ EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[waiter]')
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
 # Anymail with Mailgun
-INSTALLED_APPS += ['anymail', ]
-ANYMAIL = {
-    'MAILGUN_API_KEY': env('DJANGO_MAILGUN_API_KEY'),
-    'MAILGUN_SENDER_DOMAIN': env('MAILGUN_SENDER_DOMAIN')
-}
-EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
+# INSTALLED_APPS += ['anymail', ]
+# ANYMAIL = {
+#     'MAILGUN_API_KEY': env('DJANGO_MAILGUN_API_KEY'),
+#     'MAILGUN_SENDER_DOMAIN': env('MAILGUN_SENDER_DOMAIN')
+# }
+# EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
 
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -203,7 +205,7 @@ LOGGING = {
 }
 
 # Custom Admin URL, use {% url 'admin:index' %}
-ADMIN_URL = env('DJANGO_ADMIN_URL')
+# ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------

@@ -8,7 +8,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 
-
+__all__ = ["ContentChannel", "ContentChannelRun", "ChannelRunStage"]
 
 class ContentChannel(models.Model):
     """

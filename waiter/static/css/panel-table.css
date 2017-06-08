@@ -1,0 +1,48 @@
+.card-table .card-block {
+  padding:0;
+}
+
+.card-table .card-block .table-bordered {
+  border-style:none;
+  margin:0;
+}
+
+.card-table .card-block .table-bordered > thead > tr > th:first-of-type {
+  text-align:center;
+  width:100px;
+}
+
+.card-table .card-block .table-bordered > thead > tr > th:last-of-type, .card-table .card-block .table-bordered > tbody > tr > td:last-of-type {
+  border-right:0px;
+}
+
+.card-table .card-block .table-bordered > thead > tr > th:first-of-type, .card-table .card-block .table-bordered > tbody > tr > td:first-of-type {
+  border-left:0px;
+}
+
+.card-table .card-block .table-bordered > tbody > tr:first-of-type > td {
+  border-bottom:0px;
+}
+
+.card-table .card-block .table-bordered > thead > tr:first-of-type > th {
+  border-top:0px;
+}
+
+.card-table .card-footer .pagination {
+  margin:0;
+}
+
+.card-table .card-footer .col {
+  line-height:34px;
+  height:34px;
+}
+
+.card-table .card-heading .col h3 {
+  line-height:30px;
+  height:30px;
+}
+
+.card-table .card-block .table-bordered > tbody > tr > td {
+  line-height:34px;
+}
+

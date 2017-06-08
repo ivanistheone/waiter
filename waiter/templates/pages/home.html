@@ -1,1 +1,59 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+{% for title, channels in channels.items %}
+<div class="card-table card">
+  <div class="card-header">
+    <div class="row">
+      <div class="col col-xs-6">
+        <h3 class="card-title">{{title}}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="card-block">
+    <table class="table table-striped table-bordered table-list">
+      <thead>
+        <tr>
+          <th><em class="fa fa-cog"></em></th>
+          <th>Channel</th>
+          <th>ID</th>
+          <th>Last Run</th>
+          <th>Duration</th>
+          <th style="width: 25%">Status</th>
+          <th>Errors</th>
+        </tr> 
+      </thead>
+      <tbody>
+        {% for channel in channels %}
+        <tr>
+          <td align="center">
+            <a class="btn btn-{{channel.restart_color}} btn-sm"><em class="fa fa-refresh"></em></a>
+            <a class="btn btn-{{channel.stop_color}} btn-sm"><em class="fa fa-stop"></em></a>
+          </td>
+          <td><a href="{{channel.channel_url}}">{{channel.channel}} →</a></td>
+          <td>{{channel.id}}</td>
+          <td>{{channel.last_run}}</td> 
+          <td>{{channel.duration}}</td>
+          <td>
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped bg-{{channel.run_status}}" aria-valuenow="{{channel.status_pct}}" aria-valuemin="0" aria-valuemax="100" style="width: {{channel.status_pct}}%;">{{channel.status}}</div>
+            </div>
+          </td>
+          <td><a class="btn btn-sm btn-{{channel.run_status}}" href="errors.html">{{channel.num_errors}}  →</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<br>
+{% endfor %}
+{% endblock %}
+{% block javascript %}
+{{ block.super }}
+<script>
+var channels = [{{jschannels}}];
+</script>
+<script src="{% static 'js/typeahead.bundle.min.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}
