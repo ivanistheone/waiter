@@ -16,13 +16,8 @@ class BasicModelsCreation(TestCase):
         ch = ContentChannel(channel_id=random_uuid)
         ch.save()
 
-        run = ContentChannelRun(channel=ch, logfile="name_to_be_ignored.log")
+        run = ContentChannelRun(channel=ch)
         run.save()
-        print(run.logfile.path)
-
-        # save again to create right logfile name
-        run.save()
-        print(run.logfile.path)
 
         # check ch.runs populated
         run_ids = [run.run_id for run in ch.runs.all()]

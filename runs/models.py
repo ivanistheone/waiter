@@ -1,9 +1,11 @@
 
+from io import StringIO
 import uuid
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 
 
@@ -31,11 +33,16 @@ class ContentChannel(models.Model):
 
 
 def log_filename_for_run(run, filename):
-    """
-    Generate the log filename based on `channel_id` and `run_id`.
-    """
+    """Generate the log filename based on `channel_id` and `run_id`."""
     # Run logfile will be saved in MEDIA_ROOT/sushicheflogs/channel_id/run_id.log
-    return 'sushicheflogs/{0}/{1}.log'.format(run.channel.channel_id, run.run_id)
+    return 'sushicheflogs/{0}/{1}.log'.format(run.channel.channel_id.hex, run.run_id.hex)
+
+def create_empty_logfile(sender, **kwargs):
+    """Create an empty logfile for the ContentChannelRun after its inital save."""
+    run_instance = kwargs["instance"]
+    if kwargs["created"]:
+        dummy_file = StringIO()
+        run_instance.logfile.save('dummy_filename.log', dummy_file)
 
 class ContentChannelRun(models.Model):
     """
@@ -45,7 +52,7 @@ class ContentChannelRun(models.Model):
     channel = models.ForeignKey(ContentChannel, on_delete=models.CASCADE, related_name='runs')
     chef_name = models.CharField(max_length=200)
     ricecooker_version = models.CharField(max_length=100, blank=True, null=True)
-    logfile = models.FileField(upload_to=log_filename_for_run, verbose_name='Log file from the sushi chef run.', blank=True, null=True)
+    logfile = models.FileField(upload_to=log_filename_for_run, blank=True, null=True)
 
     # Channel stats
     resource_counts = JSONField(blank=True, null=True)
@@ -61,6 +68,8 @@ class ContentChannelRun(models.Model):
 
     def __str__(self):
         return '<Run ' + self.run_id.hex[:8] + '...>'
+
+post_save.connect(create_empty_logfile, sender=ContentChannelRun, dispatch_uid="logfilefix")
 
 
 
