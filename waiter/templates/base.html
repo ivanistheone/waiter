@@ -54,16 +54,16 @@
               <a class="nav-link" href="{% url 'schedule' %}">Schedule</a>
             </li>
               {% if request.user.is_authenticated %}
-              <li class="nav-item dropdown"><a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" href="#">{{ request.user.username }}<span class="caret"></span></a>
+              <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="true" href="#">{{ request.user.username }}<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                   <li role="presentation">
-                    <a href="#">Saved Chefs</a>
+                    <a class="nav-link" href="#">Saved Chefs</a>
                   </li>
                   <li role="presentation">
                     <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
                   </li>
                   <li role="presentation">
-                    <a href="{% url 'account_logout' %}">Logout </a>
+                    <a class="nav-link" href="{% url 'account_logout' %}">Logout </a>
                   </li>
                 </ul>
               </li>
