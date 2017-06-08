@@ -84,6 +84,8 @@ class ChannelRunStage(models.Model):
     finished = models.DateTimeField(verbose_name=_("finished"), blank=True, null=True)
     duration = models.DurationField(verbose_name=_("duration"), blank=True, null=True)
 
+    def get_duration_in_seconds(self):
+       return self.duration.total_seconds()
+
     def __str__(self):
         return '<RunStage for run ' + self.run.run_id.hex[:8] + '...>'
-

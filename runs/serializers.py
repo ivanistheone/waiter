@@ -1,5 +1,4 @@
 
-import uuid
 
 from rest_framework import serializers
 
@@ -28,9 +27,6 @@ class ContentChannelRunSerializer(serializers.ModelSerializer):
                   'logfile', 'resource_counts', 'resource_sizes', 'extra_options',
                   'started_by_user', 'started_by_user_token', 'content_server', )
 
-# Extra optional attributes like error counts, and command-line toggles (--staging / --publish / --update)
-
-
     def create(self, validated_data):
         """
         Create and return a new `ContentChannelRun` instance, given the validated data.
@@ -43,5 +39,44 @@ class ContentChannelRunSerializer(serializers.ModelSerializer):
 
 
 
+
 class ChannelRunStageCreateSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=100)
+    """
+    MMVP stage receiver serializer for messages of the form:
+    {
+       'run_id': 'string',
+       'stage': 'STAGENAME',                  # An identifier for the stage name
+       'duration': duration,                  # in seconds  timedelta.total_seconds()
+    }
+    """
+    run_id = serializers.CharField(max_length=100)
+    stage = serializers.CharField(max_length=100)
+    duration = serializers.FloatField()
+
+class ChannelRunStageSerializer(serializers.ModelSerializer):
+    """
+    Serializer used to return response.
+    """
+    run_id = serializers.UUIDField(source='run.run_id', format='hex', read_only=True)
+    duration = serializers.FloatField(source='get_duration_in_seconds')
+
+    class Meta:
+        model = ChannelRunStage
+        read_only_fields = ('run_id',)
+        fields = ('run_id', 'name', 'started', 'finished', 'duration')
+
+
+
+class ChannelRunLogMessageCreateSerializer(serializers.Serializer):
+    """
+    MMVP stage reporting serializer for messages of the form:
+    {
+        'run_id': 'string'
+        'created': 1496930390.988576,       # UNIX timestamp
+        'message': 'sting'                  # the LogRecord.msg
+    }
+    """
+    run_id = serializers.UUIDField(format='hex')
+    created = serializers.FloatField()
+    message = serializers.CharField()
+

@@ -1,4 +1,5 @@
 
+import os
 import uuid
 
 from django.test import TestCase
@@ -29,10 +30,46 @@ class BasicModelsCreation(TestCase):
 
         # check if it workded
         with open(run.logfile.path, 'r') as log_file:
-            print(log_file.read())
             log_contents = log_file.read()
-            self.assertIn(log_contents, "UNIQUESTRING94913")
+            self.assertIn("UNIQUESTRING94913", log_contents)
 
         self.assertTrue(run.channel == ch)
         self.assertTrue(run.channel.channel_id == ch.channel_id)
+        self._cleanup_logfile_and_logdir(run.run_id)
 
+    def test_logfile_created(self):
+        random_uuid = uuid.uuid4()
+        ch = ContentChannel(channel_id=random_uuid)
+        ch.save()
+        run = ContentChannelRun(channel=ch)
+        run.save()
+        self.assertIsNotNone(run.logfile)
+        self.assertIsNotNone(run.logfile.path)
+        self._cleanup_logfile_and_logdir(run.run_id)
+
+    def test_logfile_not_overwritten_every_save(self):
+        random_uuid = uuid.uuid4()
+        ch = ContentChannel.objects.create(channel_id=random_uuid)
+        run = ContentChannelRun.objects.create(channel=ch)
+        self.assertIsNotNone(run.logfile)
+        self.assertIsNotNone(run.logfile.path)
+        # write something to logfile
+        with open(run.logfile.path, 'w') as log_file:
+            log_file.write('A test line UNIQUESTRING94813 added manually\n')
+        # save
+        run.started_by_user_token = 'changed'
+        run.save()
+        # check logfile persisted
+        with open(run.logfile.path, 'r') as log_file:
+            log_contents = log_file.read()
+        self._cleanup_logfile_and_logdir(run.run_id)
+
+    def _cleanup_logfile_and_logdir(self, test_run_id):
+        run = ContentChannelRun.objects.get(run_id=test_run_id)
+        logfile_path = run.logfile.path
+        dirname, _ = channel_dir = os.path.split(logfile_path)
+        os.remove(run.logfile.path)
+        try:
+            os.rmdir(dirname)
+        except OSError:
+            pass
