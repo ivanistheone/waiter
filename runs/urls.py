@@ -5,6 +5,7 @@ from .api import ContentChannelListCreate, ContentChannelDetail, RunsForContentC
 from .api import ContentChannelRunListCreate, ContentChannelRunDetail
 from .api import ChannelRunStageListCreate
 from .api import ChannelRunLogMessageCreate
+from .api import ChannelRunProgressViews
 
 urlpatterns = [
     url(regex=r'channels/$',
@@ -34,7 +35,12 @@ urlpatterns = [
     url(regex=r'channelruns/(?P<run_id>[0-9A-Fa-f-]+)/logs/$',
         view=ChannelRunLogMessageCreate.as_view(),
         name='create_run_log_message'),
+    #
+    url(regex=r'channelruns/(?P<run_id>[0-9A-Fa-f-]+)/progress/$',
+        view=ChannelRunProgressViews.as_view(),
+        name='run_progress'),
 ]
+
 
 
 urlpatterns = format_suffix_patterns(urlpatterns)

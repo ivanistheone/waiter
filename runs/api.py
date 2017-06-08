@@ -14,7 +14,7 @@ from .serializers import ContentChannelSerializer
 from .serializers import ContentChannelRunSerializer
 from .serializers import ChannelRunStageCreateSerializer, ChannelRunStageSerializer
 from .serializers import ChannelRunLogMessageCreateSerializer
-
+from .serializers import ChannelRunProgressReceiveSerializer
 
 # CONTENT CHANNELS #############################################################
 
@@ -157,3 +157,43 @@ class ChannelRunLogMessageCreate(APIView):
                 logfile.write(str(serializer.data['created'])+':\t'+serializer.data['message'] + '\n')
             return Response({'result':'success'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# CHANNEL RUN PROGRESS #########################################################
+
+class ChannelRunProgressViews(APIView):
+
+    def get(self, request, run_id, format=None):
+        """
+        Return current progress from redis.
+        """
+        print('Reading from redis...')
+        # INSERT REDIS RETRIEVE CODE HERE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+        return Response({'progress':0.0})
+
+
+
+
+    def post(self, request, run_id, format=None):
+        """
+        Store progress update to redis.
+        """
+        serializer = ChannelRunProgressReceiveSerializer(data=request.data)
+        if serializer.is_valid():
+            print('Storing to redis...')
+            # here you can be sure that serializer.data is valid 
+            # {
+            #    "run_id": "f2c0906a77ce4651b5aedaa2b25bb3d9",
+            #    "stage": "Stage.SOMESTAGENAME",
+            #    "progress": 0.3,     # could be fraction of one or percentage
+            # }
+            print(serializer.data)
+            # INSERT REDIS STORE CODE HERE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+            return Response({'result':'success'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

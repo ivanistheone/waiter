@@ -80,3 +80,17 @@ class ChannelRunLogMessageCreateSerializer(serializers.Serializer):
     created = serializers.FloatField()
     message = serializers.CharField()
 
+
+
+class ChannelRunProgressReceiveSerializer(serializers.Serializer):
+    """
+    Run progress messages are of the form:
+    {
+       "run_id": "f2c0906a77ce4651b5aedaa2b25bb3d9",
+       "stage": "Stage.SOMESTAGENAME",
+       "progress": 0.3,     # could be fraction of one or percentage
+    }
+    """
+    run_id = serializers.CharField(max_length=100)
+    stage = serializers.CharField(max_length=100)
+    progress = serializers.FloatField()
