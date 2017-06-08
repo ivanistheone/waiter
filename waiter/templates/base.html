@@ -40,7 +40,7 @@
           </button>
           <a class="navbar-brand navbar-link" href="{% url 'home' %}">Sushi Bar</a>
           <div class="collapse navbar-collapse" id="navbar-items">
-            <form class="form-inline my-2 my-lg-2" target="_self">
+            <form id="search-form" class="form-inline my-2 my-lg-2" target="_self">
               <div class="form-group">
                 <span class="input-group-addon" id="search-icon"><i class="fa fa-search"></i></span>
                 <input class="form-control typeahead" placeholder="Search" type="text" aria-described-by="search-icon" id="search-input">
@@ -118,8 +118,6 @@
     <!-- place project specific Javascript in this file -->
 
     <script src="{% static 'js/project.js' %}"></script>
-
-
     {% endblock javascript %}
   </body>
   </html>
