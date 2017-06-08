@@ -15,6 +15,7 @@ $(function() {
     name: 'channel_search',
     source: channel_search
   });
+  // Bind to channel page url.
   $('.typeahead').on('typeahead:select', 
                         function(ev, suggestion) {
       console.log('Selection: ' + suggestion);

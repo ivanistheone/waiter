@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from django.views.generic.base import TemplateView
 from django.utils.safestring import mark_safe
 
+from runs.models import *
+
 def get_mock(**kwargs):
     return {
         "channel": kwargs.get('channel', 'Khan Academy'),
@@ -17,6 +19,7 @@ def get_mock(**kwargs):
         "num_errors": kwargs.get('num_errors', 0),
         "run_status": kwargs.get('run_status', 'success')
     }
+
 class DashboardView(TemplateView):
 
     template_name = "home.html"
