@@ -25,7 +25,7 @@ class ContentChannel(models.Model):
     # Authorization-related fields for channel (not used in MMVP)
     registered_by_user = models.EmailField(max_length=200, blank=True, null=True)
     registered_by_user_token = models.CharField(max_length=200, blank=True, null=True)
-    default_content_server = models.URLField(max_length=300, default='https://develop.contentworkshop.learningequality.org')
+    default_content_server = models.URLField(max_length=300, default=settings.DEFAULT_CONTENT_CURATION_SERVER)
 
     def __str__(self):
         return '<Channel ' + self.channel_id.hex[:8] + '...>'
@@ -64,7 +64,7 @@ class ContentChannelRun(models.Model):
     # Authorization fields
     started_by_user = models.EmailField(max_length=200, blank=True, null=True)
     started_by_user_token = models.CharField(max_length=200, blank=True, null=True)
-    content_server = models.URLField(max_length=300, default='https://develop.contentworkshop.learningequality.org')
+    content_server = models.URLField(max_length=300, default=settings.DEFAULT_CONTENT_CURATION_SERVER)
 
     def __str__(self):
         return '<Run ' + self.run_id.hex[:8] + '...>'
