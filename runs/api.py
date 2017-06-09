@@ -124,7 +124,11 @@ class ChannelRunStageListCreate(APIView):
         """
         List all stages for channel runs.
         """
-        stages = ChannelRunStage.objects.all()
+        try:
+            run = ContentChannelRun.objects.get(run_id=run_id)
+        except ContentChannelRun.DoesNotExist:
+            raise Http404
+        stages = ChannelRunStage.objects.all(run=run)
         serializer = ChannelRunStageSerializer(stages, many=True)
         return Response(serializer.data)
 
@@ -161,7 +165,10 @@ class ChannelRunLogMessageCreate(APIView):
         serializer = ChannelRunLogMessageCreateSerializer(data=request.data)
         if serializer.is_valid():
             assert run_id == serializer.data['run_id'], 'run_id mismatch in HTTP POST'
-            run = ContentChannelRun.objects.get(run_id=run_id)
+            try:
+                run = ContentChannelRun.objects.get(run_id=run_id)
+            except ContentChannelRun.DoesNotExist:
+                raise Http404
             # datetime.utcfromtimestamp(serializer.data['created']) convert ???
             with open(run.logfile.path, 'a') as logfile:
                 logfile.write(str(serializer.data['created'])+':\t'+serializer.data['message'] + '\n')
