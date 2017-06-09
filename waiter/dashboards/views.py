@@ -7,6 +7,8 @@ from django.utils.safestring import mark_safe
 from runs.models import *
 
 import redis
+# TODO(arvnd): Should probably get the redis adapter from some common
+# place.
 REDIS = redis.StrictRedis(host=settings.MMVP_REDIS_HOST,
                           port=settings.MMVP_REDIS_PORT,
                           db=settings.MMVP_REDIS_DB,
