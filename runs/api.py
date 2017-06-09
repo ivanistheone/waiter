@@ -128,7 +128,7 @@ class ChannelRunStageListCreate(APIView):
             run = ContentChannelRun.objects.get(run_id=run_id)
         except ContentChannelRun.DoesNotExist:
             raise Http404
-        stages = ChannelRunStage.objects.all(run=run)
+        stages = ChannelRunStage.objects.filter(run=run)
         serializer = ChannelRunStageSerializer(stages, many=True)
         return Response(serializer.data)
 
