@@ -115,8 +115,14 @@ class SushiChefFlowTest(APITestCase):
             self.assertIsNotNone(response.data['finished'], "finished is missing")
             self.assertEqual(response.data['duration'], stage_post['duration'], "wrong duration")
             # self.assertEqual(response.data['run_id'],  self._random_run_id, "wrong run_id")
+        
+        # check API returns correct
+        response = self.client.get(url, format='json')
+        self.assertEqual(len(response.data), len(stages_notify_posts), "wrong number of stages")
+
+        # check DB agrees
         stages_for_run_in_db = ChannelRunStage.objects.filter(run_id=self._random_run_id)
-        self.assertEqual(len(list(stages_for_run_in_db)), 3, 'Wrong number of stages in DB')
+        self.assertEqual(len(list(stages_for_run_in_db)), len(stages_notify_posts), 'Wrong number of stages in DB')
         self._cleanup_logfile_and_logdir()
 
 
