@@ -1,0 +1,19 @@
+pre {
+  padding: 10px 16px;
+  border-radius: 2px;
+  counter-reset: line;
+  line-height: 0.2em;
+}
+pre span {
+  display: block;
+  line-height: 1.5rem;
+}
+pre span:before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  border-right: 1px solid #ddd;
+  padding: 0 .5em;
+  margin-right: .5em;
+  color: #888
+}

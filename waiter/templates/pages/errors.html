@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block css %}
+{{ block.super }}
+<link href="{% static 'css/error_page.css' %}" rel="stylesheet">
+{% endblock %}
 {% block content %}
 <div id="accordion" role="tablist" aria-multiselectable="true">
   <div class="card">
@@ -38,8 +43,11 @@
     </div>
     <div id="collapseThree" class="collapse show" role="tabpanel" aria-labelledby="headingThree">
       <div class="card-block">
-        <pre class="pre-scrollable"><code>
-        {{logs}}</code></pre>
+        <pre class="pre-scrollable">
+        {% for logentry in logs %}
+          <span>{{logentry}}</span>
+        {% endfor %}
+        </pre>
       </div>
     </div>
   </div>
