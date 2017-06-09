@@ -9,7 +9,9 @@ from runs.models import *
 import redis
 REDIS = redis.StrictRedis(host=settings.MMVP_REDIS_HOST,
                           port=settings.MMVP_REDIS_PORT,
-                          db=settings.MMVP_REDIS_DB)
+                          db=settings.MMVP_REDIS_DB,
+                          charset="utf-8",
+                          decode_responses=True)
 
 def get_mock(**kwargs):
     return {
