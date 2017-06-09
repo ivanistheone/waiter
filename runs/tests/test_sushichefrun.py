@@ -9,12 +9,34 @@ https://docs.djangoproject.com/en/1.7/topics/testing/advanced/
 import os
 import uuid
 from datetime import datetime
+from unittest import skipIf
 
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from runs.models import ContentChannel, ContentChannelRun, ChannelRunStage
+
+
+
+
+
+
+# optional REDIS connection ####################################################
+from django.conf import settings
+import redis
+TESTREDIS = redis.StrictRedis(host=settings.MMVP_REDIS_HOST,
+                          port=settings.MMVP_REDIS_PORT,
+                          db=settings.MMVP_REDIS_TEST_DB)
+
+SKIP_REDIS_TESTS = True
+try:
+    TESTREDIS.set('sometestkey', 'sometestvalue')
+    SKIP_REDIS_TESTS = False
+except redis.exceptions.ConnectionError:
+    pass
+################################################################################
+
 
 
 
@@ -110,7 +132,7 @@ class SushiChefFlowTest(APITestCase):
         ]
         for stage_post in stages_notify_posts:
             response = self.client.post(url, stage_post, format='json')
-            self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Can't create event")        
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Can't create stage")        
             self.assertIsNotNone(response.data['started'], "started missing")
             self.assertIsNotNone(response.data['finished'], "finished is missing")
             self.assertEqual(response.data['duration'], stage_post['duration'], "wrong duration")
@@ -152,7 +174,7 @@ class SushiChefFlowTest(APITestCase):
         ]
         for log_message_post in log_message_posts:
             response = self.client.post(url, log_message_post, format='json')
-            self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Can't create event")
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Can't create log")
             self.assertEqual(response.data['result'], 'success', "logging message not successful")
 
         # check log messages exist
@@ -164,3 +186,43 @@ class SushiChefFlowTest(APITestCase):
 
         self._cleanup_logfile_and_logdir()
 
+    @skipIf(SKIP_REDIS_TESTS, "Skipping redis tests")
+    def test_create_run_and_progress(self):
+        """
+        Test /progress/ endpoints.
+        """
+        self._create_test_content_channel()
+        self._create_test_run()
+        url = reverse('run_progress', kwargs={'run_id': self._random_run_id})
+        progress_posts = [
+            {
+                "run_id": self._random_run_id,
+                "stage": "Stage.SOMESTAGENAME2",
+                "progress": 0.3
+            },
+            {
+                "run_id": self._random_run_id,
+                "stage": "Stage.SOMESTAGENAME2",
+                "progress": 0.4
+            },
+            {
+                "run_id": self._random_run_id,
+                "stage": "Stage.SOMESTAGENAME2",
+                "progress": 0.5
+            }
+        ]
+        for progress_post in progress_posts:
+            response = self.client.post(url, progress_post, format='json')
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED, "Can't POST progress update")
+            self.assertEqual(response.data['run_id'], self._random_run_id, "wrong run_id")
+            self.assertEqual(response.data['stage'], progress_post['stage'], "wrong stage")
+            self.assertEqual(response.data['progress'], progress_post['progress'], "wrong progress float")
+
+        # check if final progress GET returns latest correct POST's values
+        response = self.client.get(url, format='json')
+        last_progress = progress_posts[-1]
+        self.assertEqual(response.data['run_id'], self._random_run_id, "wrong run_id")
+        self.assertEqual(response.data['stage'], last_progress['stage'], "wrong stage")
+        self.assertEqual(response.data['progress'], last_progress['progress'], "wrong progress float")
+
+        self._cleanup_logfile_and_logdir()

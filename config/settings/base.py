@@ -292,6 +292,7 @@ CHANNEL_LAYERS = {
 MMVP_REDIS_HOST = 'localhost'
 MMVP_REDIS_PORT = 6379
 MMVP_REDIS_DB = 0
+MMVP_REDIS_TEST_DB = 1
 
 
 DEFAULT_CONTENT_CURATION_SERVER = 'https://develop.contentworkshop.learningequality.org'
