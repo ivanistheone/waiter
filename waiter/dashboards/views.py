@@ -1,9 +1,15 @@
 from datetime import datetime, timedelta
+from django.conf import settings
 
 from django.views.generic.base import TemplateView
 from django.utils.safestring import mark_safe
 
 from runs.models import *
+
+import redis
+REDIS = redis.StrictRedis(host=settings.MMVP_REDIS_HOST,
+                          port=settings.MMVP_REDIS_PORT,
+                          db=settings.MMVP_REDIS_DB)
 
 def get_mock(**kwargs):
     return {
@@ -46,6 +52,7 @@ class DashboardView(TemplateView):
                 continue
 
             last_event = last_event[0]
+            progress = REDIS.hgetall(last_run.run_id)
 
             context['channels']['Inactive Channels'].append({
                     "channel": channel.name,
@@ -57,9 +64,9 @@ class DashboardView(TemplateView):
                     "last_run_id": last_run.run_id,
                     # do we have an overall event or do we have to sum these?
                     "duration": "0",
-                    "status": last_event.name,
+                    "status": last_event.name.replace("Status.",""),
                     # TODO
-                    "status_pct": 100,
+                    "status_pct": progress.get('progress', 0) * 100 if progress else 0,
                     "num_errors": 0,
                     "run_status": "success",
                 })
