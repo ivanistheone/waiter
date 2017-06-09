@@ -12,7 +12,9 @@ class ContentChannelSerializer(serializers.ModelSerializer):
         model = ContentChannel
         fields = ('channel_id', 'name', 'description', 'version', 'source_domain', 'source_id',
                   'registered_by_user', 'registered_by_user_token', 'default_content_server')
-
+        extra_kwargs = {
+            'registered_by_user_token': {'write_only': True}
+        }
 
 class ContentChannelRunSerializer(serializers.ModelSerializer):
     run_id = serializers.UUIDField(format='hex', read_only=True)
@@ -26,6 +28,9 @@ class ContentChannelRunSerializer(serializers.ModelSerializer):
         fields = ('run_id', 'channel_id', 'channel', 'chef_name', 'ricecooker_version',
                   'logfile', 'resource_counts', 'resource_sizes', 'extra_options',
                   'started_by_user', 'started_by_user_token', 'content_server', )
+        extra_kwargs = {
+            'started_by_user_token': {'write_only': True}
+        }
 
     def create(self, validated_data):
         """
