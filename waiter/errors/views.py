@@ -17,6 +17,5 @@ class RunErrorsView(TemplateView):
         # at minimum track a static folder and have the client side 
         # load it.
         run.logfile.open(mode='r')
-        log_string = run.logfile.read()
-        context['logs'] = log_string.replace('\n', '<br>')
+        context['logs'] = run.logfile.readlines()
         return context
