@@ -22,7 +22,9 @@ from .serializers import ChannelRunProgressSerializer
 import redis
 REDIS = redis.StrictRedis(host=settings.MMVP_REDIS_HOST,
                           port=settings.MMVP_REDIS_PORT,
-                          db=settings.MMVP_REDIS_DB)
+                          db=settings.MMVP_REDIS_DB,
+                          charset="utf-8",
+                          decode_responses=True)
 
 
 
@@ -118,11 +120,11 @@ class ContentChannelRunDetail(APIView):
 
 class ChannelRunStageListCreate(APIView):
     """
-    List and access the events associated with ContentChannelRun `run_id`.
+    List and create the stages for the ContentChannelRun `run_id`.
     """
     def get(self, request, run_id, format=None):
         """
-        List all stages for channel runs.
+        List all stages for a channel run.
         """
         stages = ChannelRunStage.objects.all()
         serializer = ChannelRunStageSerializer(stages, many=True)
@@ -130,12 +132,10 @@ class ChannelRunStageListCreate(APIView):
 
     def post(self, request, run_id, format=None):
         """
-        POST: notify sushibar of a given sushichef event for `run_id`.
+        POST: notify sushibar that `run_id` sushichef has finished a stage.
         """
-        # print(request.data)
         create_serializer = ChannelRunStageCreateSerializer(data=request.data)
         if create_serializer.is_valid():
-            # print(create_serializer.data)
             assert run_id == create_serializer.data['run_id'], 'run_id mismatch in HTTP POST'
             duration = timedelta(seconds=create_serializer.data['duration'])
             server_time = timezone.now()
@@ -145,6 +145,7 @@ class ChannelRunStageListCreate(APIView):
                                                        started=calculated_started,
                                                        finished=server_time,
                                                        duration=duration)
+            # TODO: cleanup dict in redis under name `run_id` on FINISHED stage
             response_serializer = ChannelRunStageSerializer(run_stage)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(create_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -173,7 +174,7 @@ class ChannelRunLogMessageCreate(APIView):
 
 # CHANNEL RUN PROGRESS #########################################################
 # Temporary hack for MMVP --- manually store/retrieve progress in redis
-# this will be repalced with channels implementation for final version
+# TODO: repalce with channels implementation for final version
 
 class ChannelRunProgressEndpoints(APIView):
 
@@ -181,16 +182,7 @@ class ChannelRunProgressEndpoints(APIView):
         """
         Return current progress from redis.
         """
-        progress_value_types = [str, str, float]
-        progress_keys = ['run_id', 'stage', 'progress']
-        raw_values = REDIS.hmget(run_id, progress_keys)
-        if None in raw_values:
-            raise Http404
-        raw_values_str = [item.decode('utf-8') for item in raw_values]
-        keys_values_list = []
-        for t, key, val in zip(progress_value_types, progress_keys, raw_values_str):
-            keys_values_list.append( (key, t(val)) )
-        progress_data_dict = dict(keys_values_list)
+        progress_data_dict = REDIS.hgetall(run_id)
         serializer = ChannelRunProgressSerializer(progress_data_dict)
         return Response(serializer.data)
 
