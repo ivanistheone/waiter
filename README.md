@@ -6,9 +6,16 @@ A test project for exploring Django channels as messaging layer for dashboard pr
 
 Settings
 --------
+  - Use `config/settings/base.py` for common settings
+  - Use `config/settings/local.py` for local development settings (default option when running `./manage.py`).
+  - Use `config/settings/production.py` for added prod security restrictions.
+    Credentials will be `source`d from the file `.prodenv`.
 
-Use `config/settings/local.py` for local development (default option when running `./manage.py`).
 
+
+Localhost provision
+-------------------
+You'll need to install Postgres DB and Python3 on your machine.
 
 
 Docker provision for dev and testing
@@ -19,18 +26,11 @@ Create docker container images
     docker-compose up
 
 
-Localhost provision
--------------------
-You'll need thse on your localhost:
-
-    postgres
-    python3 
-
 
 Install
 -------
-
 Code:
+
     virtualenv -p python3  venv
     source venv/bin/activate
     pip install -r requirements/local.txt
@@ -38,6 +38,7 @@ Code:
     ./manage.py makemigrations
 
 DB:
+
     createdb waiter
     ./manage.py migrate
 
@@ -58,6 +59,20 @@ Run in development
     ./manage.py runserver
 
 
+Live reloading and Sass CSS compilation
+---------------------------------------
+
+    gulp
+
+see `gulpfile.js` for details.
+
+
+Running tests
+-------------
+
+    ./manage.py test runs
+
+
 
 Clean-slate restart
 -------------------
@@ -71,34 +86,10 @@ This will drop all the data in the DB and restart:
     ./manage.py loaddata waiter/users/fixtures/admin_user.json
 
 
-Test coverage
--------------
-
-To run the tests, check your test coverage, and generate an HTML coverage report::
-
-    coverage run manage.py test
-    coverage html
-    open htmlcov/index.html
 
 
-Running tests
--------------
-
-    ./manage.py test runs
-
+Docker production deployment
+----------------------------
+Use the `production.yml` docker file. **(Currently not supported)**
 
 
-Live reloading and Sass CSS compilation
----------------------------------------
-
-    gulp
-
-see `gulpfile.js` for details.
-
-
-
-Production deployment
----------------------
-
-Use the `productoin.yml` docker file.
-See [here](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html) for more info.
