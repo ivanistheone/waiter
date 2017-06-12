@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-12">
+   <h2>{{channel.name}}</h2>
+   <p>Registered by: <a href="mailto:{{channel.registered_by_user}}">{{channel.registered_by_user}}</a>
+   </p>
+ </div>
+</div>
+<div class="card">
+  <div class="card-header">
+   <h3 class="card-title">Run Statistics</h3>
+ </div>
+ <div class="card-block">
+  <div class="progress">
+    {% for stage in run_stages %}
+      <div class="progress-bar progress-bar-striped active stage-progress" aria-valuenow="20"
+      aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" data-placement="top" title="{{stage.duration}}" data-trigger="hover" style="background-color: {{stage.color}}; width: {{stage.percentage}}%;">{{stage.name}}</div>
+    {% endfor %}
+  </div>
+  <br>
+  <p>Total duration: {{total_time}}</p>
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Current Run</th>
+          <th>Previous Run</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><i class="fa fa-video-camera"></i> Videos</td>
+          <td class="table-success">300</td>
+          <td>250</td>
+        </tr>
+        <tr>
+          <td><i class="fa fa-tasks"></i> Exercises</td>
+          <td class="table-danger">1100</td>
+          <td>1200</td>
+        </tr>
+        <tr>
+          <td><i class="fa fa-warning"></i> Errors</td>
+          <td>14</td>
+          <td>14</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+<br>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header">
+       <h3 class="card-title">Content Tree</h3>
+     </div>
+     <div class="card-block">
+      <ul>
+        <li>English</li>
+        <li>Math
+          <ul>
+            <li>Multiplication</li>
+            <li>Division</li>
+          </ul>
+        </li>
+        <li>Geography</li>
+        <li>Science</li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="col-lg-6">
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="form-check">
+        <label><input type="checkbox" />Videos</label>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="form-check">
+        <label><input type="checkbox" checked="" />Exercises</label>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="form-check">
+        <label><input type="checkbox" checked="" />Topics</label>
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="form-check">
+        <label><input type="checkbox" />Errors</label>
+      </div>
+    </div>
+  </div>
+  <img class="img-fluid" src=""/>
+</div>
+{% endblock %}
+{% block javascript %}
+{{ block.super }}
+<script src="{% static 'js/runs.js' %}"></script>
+{% endblock %}

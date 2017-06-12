@@ -1,0 +1,3 @@
+$(function() {
+  $('.stage-progress').tooltip();
+});

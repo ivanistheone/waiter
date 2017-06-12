@@ -30,7 +30,7 @@
             <a class="btn btn-{{channel.restart_color}} btn-sm"><em class="fa fa-refresh"></em></a>
             <a class="btn btn-{{channel.stop_color}} btn-sm"><em class="fa fa-stop"></em></a>
           </td>
-          <td><a href="{{channel.channel_url}}">{{channel.channel}} →</a></td>
+          <td><a href="/runs/{{channel.last_run_id}}/">{{channel.channel}} →</a></td>
           <td><button class="channel-id-btn btn btn-sm btn-success" data-toggle="tooltip" data-placement="right" title="Copied!" data-trigger="click" data-clipboard-text="{{channel.id}}">Copy</button></td>
           <td>{{channel.last_run}}</td> 
           <td>{{channel.duration}}</td>

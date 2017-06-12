@@ -45,18 +45,14 @@ class DashboardView(TemplateView):
         for channel in ContentChannel.objects.all():
             # TODO(arvnd): add active bit to channel model and 
             # split on that.
-            last_run = ContentChannelRun.objects.filter(channel__channel_id=channel.channel_id)[:1]
+            # TODO(arvnd): use .latest(created)
+            last_run = channel.runs.all()[:1]
             if not len(last_run):
                 print("No runs for channel %s " % channel.name)
                 continue
             last_run = last_run[0]
-            last_event = ChannelRunStage.objects.filter(run_id=last_run.run_id)[:1]
-            if not len(last_event):
-                print("No events for run %s" % last_run.run_id)
-                continue
-
-            last_event = last_event[0]
-            progress = REDIS.hgetall(last_run.run_id)
+            last_event = last_run.events.latest("finished")
+            progress = REDIS.hgetall(last_run.run_id.hex)
 
             context['channels']['Inactive Channels'].append({
                     "channel": channel.name,
