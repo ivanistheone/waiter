@@ -6,7 +6,7 @@ from .models import ContentChannel, ContentChannelRun, ChannelRunStage
 @admin.register(ContentChannel)
 class ContentChannelAdmin(admin.ModelAdmin):
     list_display = ('id', 'channel_id', 'name', 'version', 'source_id', 'source_domain',
-                    'registered_by_user', 'registered_by_user_token', 'default_content_server')
+                    'registered_by_user', 'default_content_server', 'created_at')
     search_fields = ['name', 'source_domain']
 
 
@@ -20,5 +20,5 @@ class ContentChannelRunAdmin(admin.ModelAdmin):
     def channel_id(self, obj):
         return obj.channel.channel_id
     inlines = [ChannelRunStageInline, ]
-    list_display = ('run_id', 'channel_id', 'chef_name', 'logfile')
+    list_display = ('run_id', 'channel_id', 'chef_name', 'created_at')
 

@@ -27,9 +27,15 @@ class ContentChannel(models.Model):
     registered_by_user_token = models.CharField(max_length=200, blank=True, null=True)
     default_content_server = models.URLField(max_length=300, default=settings.DEFAULT_CONTENT_CURATION_SERVER)
 
+    # for temporal ordering
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return '<Channel ' + self.channel_id.hex[:8] + '...>'
 
+    class Meta:
+        get_latest_by = "created_at"
 
 
 def log_filename_for_run(run, filename):
@@ -66,8 +72,15 @@ class ContentChannelRun(models.Model):
     started_by_user_token = models.CharField(max_length=200, blank=True, null=True)
     content_server = models.URLField(max_length=300, default=settings.DEFAULT_CONTENT_CURATION_SERVER)
 
+    # for temporal ordering
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return '<Run ' + self.run_id.hex[:8] + '...>'
+
+    class Meta:
+        get_latest_by = "created_at"
 
 post_save.connect(create_empty_logfile, sender=ContentChannelRun, dispatch_uid="logfilefix")
 
@@ -79,7 +92,7 @@ class ChannelRunStage(models.Model):
     """
     # id = local, implicit, autoincrementing integer primary key
     run = models.ForeignKey(ContentChannelRun, on_delete=models.CASCADE, related_name='events')
-    name = models.CharField(max_length=100)    
+    name = models.CharField(max_length=100)
     started = models.DateTimeField(verbose_name=_("started"), blank=True, null=True)
     finished = models.DateTimeField(verbose_name=_("finished"), blank=True, null=True)
     duration = models.DurationField(verbose_name=_("duration"), blank=True, null=True)
