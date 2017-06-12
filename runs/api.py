@@ -172,7 +172,7 @@ class ChannelRunLogMessageCreate(APIView):
                 raise Http404
             # datetime.utcfromtimestamp(serializer.data['created']) convert ???
             with open(run.logfile.path, 'a') as logfile:
-                logfile.write(str(serializer.data['created'])+':\t'+serializer.data['message'] + '\n')
+                logfile.write(serializer.data['message'] + '\n')
             return Response({'result':'success'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
