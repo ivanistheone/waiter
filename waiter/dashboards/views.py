@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from django.conf import settings
 
 from django.views.generic.base import TemplateView
@@ -45,14 +45,20 @@ class DashboardView(TemplateView):
         for channel in ContentChannel.objects.all():
             # TODO(arvnd): add active bit to channel model and 
             # split on that.
-            # TODO(arvnd): use .latest(created)
-            last_run = channel.runs.all()[:1]
-            if not len(last_run):
+            try:
+                last_run = channel.runs.latest("created_at")
+            except ContentChannelRun.DoesNotExist:
                 print("No runs for channel %s " % channel.name)
                 continue
-            last_run = last_run[0]
-            last_event = last_run.events.latest("finished")
+        
+            try:
+                last_event = last_run.events.latest("finished")
+            except ChannelRunStage.DoesNotExist:
+                print("No stages for run %s" % last_run.run_id.hex)
+                continue
+
             progress = REDIS.hgetall(last_run.run_id.hex)
+            total_duration = sum((event.duration for event in last_run.events.all()), timedelta())
 
             context['channels']['Inactive Channels'].append({
                     "channel": channel.name,
@@ -63,7 +69,7 @@ class DashboardView(TemplateView):
                     "last_run": datetime.strftime(last_event.finished, "%b %w, %H:%M"),
                     "last_run_id": last_run.run_id,
                     # do we have an overall event or do we have to sum these?
-                    "duration": "0",
+                    "duration": str(timedelta(seconds=total_duration.seconds)),
                     "status": last_event.name.replace("Status.",""),
                     # TODO
                     "status_pct": progress.get('progress', 0) * 100 if progress else 0,
