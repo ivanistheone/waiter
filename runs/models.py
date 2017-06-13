@@ -33,7 +33,7 @@ class ContentChannel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
-    user = models.ManyToManyField(User)
+    followers = models.ManyToManyField(User, related_name="saved_channels")
 
     def __str__(self):
         return '<Channel ' + self.channel_id.hex[:8] + '...>'
