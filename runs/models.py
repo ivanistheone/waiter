@@ -8,6 +8,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
 
+from waiter.users.models import User
+
 __all__ = ["ContentChannel", "ContentChannelRun", "ChannelRunStage"]
 
 class ContentChannel(models.Model):
@@ -30,6 +32,8 @@ class ContentChannel(models.Model):
     # for temporal ordering
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    user = models.ManyToManyField(User)
 
     def __str__(self):
         return '<Channel ' + self.channel_id.hex[:8] + '...>'
