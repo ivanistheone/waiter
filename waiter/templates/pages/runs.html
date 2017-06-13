@@ -3,10 +3,15 @@
 {% block content %}
 <div class="row">
   <div class="col-lg-12">
-   <h2>{{channel.name}}</h2>
-   <p>Registered by: <a href="mailto:{{channel.registered_by_user}}">{{channel.registered_by_user}}</a>
-   </p>
- </div>
+    <div class="row">
+      <span style="padding-left: 15px; padding-right: 15px;">
+        <i class="save-icon fa-2x fa fa-star-o"></i>
+      </span>
+      <h2>{{channel.name}}</h2>
+    </div>
+    <p>Registered by: <a href="mailto:{{channel.registered_by_user}}">{{channel.registered_by_user}}</a>
+    </p>
+  </div>
 </div>
 <div class="card">
   <div class="card-header">
@@ -15,8 +20,8 @@
  <div class="card-block">
   <div class="progress">
     {% for stage in run_stages %}
-      <div class="progress-bar progress-bar-striped active stage-progress" aria-valuenow="20"
-      aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" data-placement="top" title="{{stage.duration}}" data-trigger="hover" style="background-color: {{stage.color}}; width: {{stage.percentage}}%;">{{stage.name}}</div>
+    <div class="progress-bar progress-bar-striped active stage-progress" aria-valuenow="20"
+    aria-valuemin="0" aria-valuemax="100" data-toggle="tooltip" data-placement="top" data-animation="false" title="{{stage.name}}: {{stage.duration}}" data-trigger="focus hover" style="background-color: {{stage.color}}; width: {{stage.percentage}}%;">{{stage.name}}</div>
     {% endfor %}
   </div>
   <br>
@@ -33,7 +38,7 @@
       <tbody>
         {% for run_stat in run_stats %}
         <tr>
-          <td><i class="fa {{run_stat.icon}}"></i>{{run_stat.name}}</td>
+          <td><i class="fa {{run_stat.icon}}"></i> {{run_stat.name}}</td>
           <td class="{{run_stat.bg_class}}">{{run_stat.value}}</td>
           <td>{{run_stat.previous_value}}</td>
         </tr>
@@ -66,32 +71,11 @@
   </div>
 </div>
 <div class="col-lg-6">
-  <div class="row">
-    <div class="col-lg-3">
-      <div class="form-check">
-        <label><input type="checkbox" />Videos</label>
-      </div>
-    </div>
-    <div class="col-lg-3">
-      <div class="form-check">
-        <label><input type="checkbox" checked="" />Exercises</label>
-      </div>
-    </div>
-    <div class="col-lg-3">
-      <div class="form-check">
-        <label><input type="checkbox" checked="" />Topics</label>
-      </div>
-    </div>
-    <div class="col-lg-3">
-      <div class="form-check">
-        <label><input type="checkbox" />Errors</label>
-      </div>
-    </div>
-  </div>
-  <img class="img-fluid" src=""/>
+  <canvas id="resource-chart" width="500" height="300" style="display: block; height: 400px; width: 500px;"></canvas>
 </div>
 {% endblock %}
 {% block javascript %}
 {{ block.super }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 <script src="{% static 'js/runs.js' %}"></script>
 {% endblock %}

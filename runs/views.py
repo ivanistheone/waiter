@@ -29,7 +29,7 @@ def sizeof_fmt(num, suffix='B'):
 progress_bar_colors = ["#FF0000", "#00A08A", "#F2AD00", "#F98400", "#5BBCD6", "#ECCBAE", "#046C9A", "#D69C4E", "#ABDDDE", "#000000"]
 resource_icons = {".mp4": "fa-video-camera", ".png": "fa-file-image-o", ".pdf": "fa-file-pdf-o", ".zip": "fa-file-archive-o"}
 
-format_duration = lambda t: time(0, 0, t.seconds).strftime("%M:%S")
+format_duration = lambda t: str(timedelta(seconds=t.seconds))
 
 class RunView(TemplateView):
 
@@ -63,7 +63,7 @@ class RunView(TemplateView):
         context['run_stats'] = []
         if run.resource_counts:
             for k, v in run.resource_counts.items():
-                prev_value = previous_run.resource_counts.get(k, 0)
+                prev_value = previous_run.resource_counts.get(k, 0) if previous_run.resource_counts else 0
                 bg_class = "table-default"
                 if v < prev_value:
                     bg_class = "table-danger"

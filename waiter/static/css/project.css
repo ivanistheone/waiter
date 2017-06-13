@@ -1,4 +1,7 @@
 /* These styles are generated from project.scss. */
+.save-icon {
+  color: #F2AD00;
+}
 
 .alert-debug {
   color: black;
