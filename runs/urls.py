@@ -6,6 +6,7 @@ from .api import ContentChannelRunListCreate, ContentChannelRunDetail
 from .api import ChannelRunStageListCreate
 from .api import ChannelRunLogMessageCreate
 from .api import ChannelRunProgressEndpoints
+from .api import ContentChannelSaveToProfile
 
 urlpatterns = [
     url(regex=r'channels/$',
@@ -18,6 +19,10 @@ urlpatterns = [
     #
     url(regex=r'channels/(?P<channel_id>[0-9A-Fa-f-]+)/runs/$',
         view=RunsForContentChannelList.as_view(),
+        name='runs_for_channel'),
+    #
+    url(regex=r'channels/(?P<channel_id>[0-9A-Fa-f-]+)/save_to_profile/$',
+        view=ContentChannelSaveToProfile.as_view(),
         name='runs_for_channel'),
     #
     url(regex=r'channelruns/$',

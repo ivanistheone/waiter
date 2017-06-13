@@ -14,8 +14,8 @@ urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
     url(r'^schedule/$', TemplateView.as_view(template_name='pages/schedule.html'), name='schedule'),
     # TODO: this is a bad regex, use a better one that matches UUID4
-    url(r'^errors/(?P<runid>.+)/$', RunErrorsView.as_view(template_name='pages/errors.html'), name='errors'),
-    url(r'^runs/(?P<runid>.+)/$', RunView.as_view(template_name='pages/runs.html'), name='runs'),
+    url(r'^errors/(?P<runid>[0-9A-Fa-f-]+)/$', RunErrorsView.as_view(template_name='pages/errors.html'), name='errors'),
+    url(r'^runs/(?P<runid>[0-9A-Fa-f-]+)/$', RunView.as_view(template_name='pages/runs.html'), name='runs'),
 
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),

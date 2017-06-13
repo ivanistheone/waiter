@@ -45,6 +45,12 @@ class ContentChannelDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = ContentChannelSerializer
     lookup_field =  'channel_id'
 
+class ContentChannelSaveToProfile(APIView):
+    """
+    Save a content channel to the user profile.
+    """
+    def post(self, request, channel_id, format=None):
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 # CHANNEL RUNS #################################################################
