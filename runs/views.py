@@ -18,8 +18,16 @@ REDIS = redis.StrictRedis(host=settings.MMVP_REDIS_HOST,
                           charset="utf-8",
                           decode_responses=True)
 
+def sizeof_fmt(num, suffix='B'):
+    for unit in ['','K','M','G']:
+        if abs(num) < 1024.0:
+            return "%3.1f%s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f%s%s" % (num, 'T', suffix)
+
 # Darjeeling Limited
 progress_bar_colors = ["#FF0000", "#00A08A", "#F2AD00", "#F98400", "#5BBCD6", "#ECCBAE", "#046C9A", "#D69C4E", "#ABDDDE", "#000000"]
+resource_icons = {".mp4": "fa-video-camera", ".png": "fa-file-image-o", ".pdf": "fa-file-pdf-o", ".zip": "fa-file-archive-o"}
 
 format_duration = lambda t: time(0, 0, t.seconds).strftime("%M:%S")
 
@@ -51,8 +59,24 @@ class RunView(TemplateView):
             stage['percentage'] = stage['duration'] / total_time * 100
             stage['duration'] = format_duration(stage['duration'])
         context['total_time'] = format_duration(total_time)
+        
+        context['run_stats'] = []
+        if run.resource_counts:
+            for k, v in run.resource_counts.items():
+                prev_value = previous_run.resource_counts.get(k, 0)
+                bg_class = "table-default"
+                if v < prev_value:
+                    bg_class = "table-danger"
+                elif v > prev_value:
+                    bg_class = "table-success"
+                context['run_stats'].append({
+                        "icon": resource_icons.get(k, "fa-file"),
+                        "name": k,
+                        "value": v,
+                        "previous_value": prev_value if prev_value else "-",
+                        "bg_class": bg_class,
+                    })
 
-        # todo resource counts
         # todo graphs
         # todo save to my profile
 

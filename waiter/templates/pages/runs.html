@@ -31,21 +31,13 @@
         </tr>
       </thead>
       <tbody>
+        {% for run_stat in run_stats %}
         <tr>
-          <td><i class="fa fa-video-camera"></i> Videos</td>
-          <td class="table-success">300</td>
-          <td>250</td>
+          <td><i class="fa {{run_stat.icon}}"></i>{{run_stat.name}}</td>
+          <td class="{{run_stat.bg_class}}">{{run_stat.value}}</td>
+          <td>{{run_stat.previous_value}}</td>
         </tr>
-        <tr>
-          <td><i class="fa fa-tasks"></i> Exercises</td>
-          <td class="table-danger">1100</td>
-          <td>1200</td>
-        </tr>
-        <tr>
-          <td><i class="fa fa-warning"></i> Errors</td>
-          <td>14</td>
-          <td>14</td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
