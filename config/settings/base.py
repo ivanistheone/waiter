@@ -44,9 +44,9 @@ DJANGO_APPS = [
 
     # Admin
     'django.contrib.admin',
-    
+
     # Test websocket comms
-    #'channels',
+    'channels',
     'rest_framework',
 
 ]
@@ -282,8 +282,11 @@ ADMIN_URL = r'^admin/'
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgiref.inmemory.ChannelLayer",
-        "ROUTING": "chaneleria.routing.channel_routing",
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [env.str('REDIS_URL', 'redis://localhost:6379')],
+        },
+        "ROUTING": "runs.routing.channel_routing",
     },
 }
 
