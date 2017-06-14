@@ -23,7 +23,7 @@ urlpatterns = [
     #
     url(regex=r'channels/(?P<channel_id>[0-9A-Fa-f-]+)/save_to_profile/$',
         view=ContentChannelSaveToProfile.as_view(),
-        name='runs_for_channel'),
+        name='save_channel_to_profile'),
     #
     url(regex=r'channelruns/$',
         view=ContentChannelRunListCreate.as_view(),

@@ -59,7 +59,7 @@ class RunView(TemplateView):
             stage['percentage'] = stage['duration'] / total_time * 100
             stage['duration'] = format_duration(stage['duration'])
         context['total_time'] = format_duration(total_time)
-        
+
         context['run_stats'] = []
         if run.resource_counts:
             for k, v in run.resource_counts.items():
@@ -76,13 +76,12 @@ class RunView(TemplateView):
                         "previous_value": prev_value if prev_value else "-",
                         "bg_class": bg_class,
                     })
-        try:
-            ContentChannel.objects.get(followers__id=self.request.user.id)
+
+        if self.request.user in run.channel.followers.all():
             # closed star if the user has already saved this.
             context['saved_icon_class'] = 'fa-star'
-        except ContentChannel.DoesNotExist:
+        else:
             context['saved_icon_class'] = 'fa-star-o'
-
 
         # todo graphs
         # todo save to my profile

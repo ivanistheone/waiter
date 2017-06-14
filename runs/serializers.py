@@ -99,3 +99,10 @@ class ChannelRunProgressSerializer(serializers.Serializer):
     run_id = serializers.CharField(max_length=100)
     stage = serializers.CharField(max_length=100)
     progress = serializers.FloatField()
+
+
+class ContentChannelSaveToProfileSerializer(serializers.Serializer):
+    """
+    A true/false single-field serializer for saving channel to profile.
+    """
+    save_channel_to_profile = serializers.BooleanField()
