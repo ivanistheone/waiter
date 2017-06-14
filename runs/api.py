@@ -14,7 +14,6 @@ from .models import ContentChannel, ContentChannelRun, ChannelRunStage
 from .serializers import ContentChannelSerializer
 from .serializers import ContentChannelRunSerializer
 from .serializers import ChannelRunStageCreateSerializer, ChannelRunStageSerializer
-from .serializers import ChannelRunLogMessageCreateSerializer
 from .serializers import ChannelRunProgressSerializer
 
 
@@ -153,30 +152,6 @@ class ChannelRunStageListCreate(APIView):
             response_serializer = ChannelRunStageSerializer(run_stage)
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(create_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# CHANNEL RUN LOGS #############################################################
-
-class ChannelRunLogMessageCreate(APIView):
-
-    def post(self, request, run_id, format=None):
-        """
-        Append the log message to the logfile for the run `run_id`.
-        """
-        serializer = ChannelRunLogMessageCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            assert run_id == serializer.data['run_id'], 'run_id mismatch in HTTP POST'
-            try:
-                run = ContentChannelRun.objects.get(run_id=run_id)
-            except ContentChannelRun.DoesNotExist:
-                raise Http404
-            # datetime.utcfromtimestamp(serializer.data['created']) convert ???
-            with open(run.logfile.path, 'a') as logfile:
-                logfile.write(serializer.data['message'] + '\n')
-            return Response({'result':'success'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 
 # CHANNEL RUN PROGRESS #########################################################
