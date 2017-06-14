@@ -47,6 +47,6 @@ $(function() {
   // Bind to channel page url.
   $('.typeahead').on('typeahead:select', 
                         function(ev, suggestion) {
-      console.log('Selection: ' + suggestion);
+      window.location.href = "/channels/" + suggestion["channel_id"] + "/";
   });
 });
