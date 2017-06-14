@@ -18,14 +18,15 @@ class ContentChannelSerializer(serializers.ModelSerializer):
 
 class ContentChannelRunSerializer(serializers.ModelSerializer):
     run_id = serializers.UUIDField(format='hex', read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
     channel_id = serializers.UUIDField(format='hex', write_only=True)   # need to supply channel_id when creating run
     channel = ContentChannelSerializer(read_only=True)
     # hostname ??? --> to store where sushi chef is running ???
 
     class Meta:
         model = ContentChannelRun
-        read_only_fields = ('run_id', 'channel')
-        fields = ('run_id', 'channel_id', 'channel', 'chef_name', 'ricecooker_version',
+        read_only_fields = ('run_id', 'channel', 'created_at')
+        fields = ('run_id', 'channel_id', 'channel', 'chef_name', 'ricecooker_version', 'created_at',
                   'logfile', 'resource_counts', 'resource_sizes', 'extra_options',
                   'started_by_user', 'started_by_user_token', 'content_server', )
         extra_kwargs = {
