@@ -20,6 +20,7 @@ def update():
         with prefix("source activate"):
             run("git pull")
             run("pip install -r requirements/production.txt")
+            run("./manage.py collectstatic --noinput")
 
 def deploy():
     env.user = os.environ.get('USER')
@@ -27,3 +28,4 @@ def deploy():
     sudo("supervisorctl restart leq", pty=False)
     sudo("supervisorctl restart leq_channels_workers", pty=False)
     sudo("supervisorctl restart leq_channels_daphne", pty=False)
+
