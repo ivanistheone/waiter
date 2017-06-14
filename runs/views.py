@@ -3,7 +3,8 @@ from datetime import timedelta
 from datetime import time
 
 from django.conf import settings
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.base import TemplateView
 from django.utils.safestring import mark_safe
 
@@ -32,14 +33,17 @@ resource_icons = {".mp4": "fa-video-camera", ".png": "fa-file-image-o", ".pdf": 
 format_duration = lambda t: str(timedelta(seconds=t.seconds))
 
 class RunView(TemplateView):
-
     template_name = "runs.html"
+
+    @method_decorator(ensure_csrf_cookie) # via https://stackoverflow.com/a/43712324/127114
+    def get(self, request, *args, **kwargs):
+        return super(RunView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(RunView, self).get_context_data(**kwargs)
         run_id = uuid.UUID(kwargs.get('runid', ''))
         run = ContentChannelRun.objects.get(run_id=run_id)
-        # TODO(arvnd): The previous run will be wrong for any run that 
+        # TODO(arvnd): The previous run will be wrong for any run that
         # is not the most recent.
         previous_run = run.channel.runs.all()[:2]
         if len(previous_run) < 2:
