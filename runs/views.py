@@ -53,16 +53,24 @@ def get_run_stats(current_run_stats, previous_run_stats, format_value_fn = lambd
     return stats
 
 class RunView(TemplateView):
-    template_name = "runs.html"
+    template_name = "pages/runs.html"
+    search_by_channel = False
+
 
     @method_decorator(ensure_csrf_cookie) # via https://stackoverflow.com/a/43712324/127114
     def get(self, request, *args, **kwargs):
         return super(RunView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(RunView, self).get_context_data(**kwargs)
-        run_id = uuid.UUID(kwargs.get('runid', ''))
-        run = ContentChannelRun.objects.get(run_id=run_id)
+        context = super(RunView, self).get_context_data(**kwargs) 
+        run = None
+        if self.search_by_channel:
+            channel_id = uuid.UUID(kwargs.get('channelid', ''))
+            channel = ContentChannel.objects.get(channel_id=channel_id)
+            run = channel.runs.latest("created_at")
+        else:
+            run_id = uuid.UUID(kwargs.get('runid', ''))
+            run = ContentChannelRun.objects.get(run_id=run_id)
         # TODO(arvnd): The previous run will be wrong for any run that
         # is not the most recent.
         previous_run = run.channel.runs.all()[:2]
