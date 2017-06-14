@@ -76,6 +76,13 @@ class RunView(TemplateView):
                         "previous_value": prev_value if prev_value else "-",
                         "bg_class": bg_class,
                     })
+        try:
+            ContentChannel.objects.get(followers__id=self.request.user.id)
+            # closed star if the user has already saved this.
+            context['saved_icon_class'] = 'fa-star'
+        except ContentChannel.DoesNotExist:
+            context['saved_icon_class'] = 'fa-star-o'
+
 
         # todo graphs
         # todo save to my profile

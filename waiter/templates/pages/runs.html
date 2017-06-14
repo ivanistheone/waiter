@@ -5,7 +5,7 @@
   <div class="col-lg-12">
     <div class="row">
       <span style="padding-left: 15px; padding-right: 15px;">
-        <i class="save-icon fa-2x fa fa-star-o"></i>
+        <i class="save-icon fa-2x fa {{saved_icon_class}}"></i>
       </span>
       <h2>{{channel.name}}</h2>
     </div>
@@ -76,6 +76,9 @@
 {% endblock %}
 {% block javascript %}
 {{ block.super }}
+<script>
+var channel_id = "{{channel.channel_id.hex}}";
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 <script src="{% static 'js/runs.js' %}"></script>
 {% endblock %}

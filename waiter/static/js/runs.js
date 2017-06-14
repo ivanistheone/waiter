@@ -52,8 +52,18 @@ function createConfig() {
 $(function() {
   $('.stage-progress').tooltip();
   $('.save-icon').click(function() {
-    $(this).toggleClass('fa-star');
-    $(this).toggleClass('fa-star-o');
+    var toggleSave = function(data) {
+      $(this).toggleClass('fa-star');
+      $(this).toggleClass('fa-star-o');
+    };
+    if ($(this).hasClass('fa-star')) {
+      // Unfollow this channel.
+      // TODO(arvnd): I guess this becomes a different method?
+      $.post("/api/runs/channels/" + channel_id + "/save_to_profile/", toggleSave);
+    } else {
+      // Follow this channel.
+      $.post("/api/runs/channels/" + channel_id + "/save_to_profile/", toggleSave);
+    }
   });
   var myLineChart = new Chart($("#resource-chart")[0].getContext('2d'), createConfig());
 });
