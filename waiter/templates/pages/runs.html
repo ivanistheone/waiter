@@ -11,6 +11,17 @@
     </div>
     <p>Registered by: <a href="mailto:{{channel.registered_by_user}}">{{channel.registered_by_user}}</a>
     </p>
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="run-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Other Runs
+      </button>
+      <div class="dropdown-menu" aria-labelledby="run-dropdown">
+        {% for run in channel.runs.all %}
+        <a class="dropdown-item" href="/runs/{{run.run_id.hex}}/">{{run.modified_at}}</a>
+        {% endfor %}
+      </div>
+    </div>
+    <br>
   </div>
 </div>
 <div class="card">
