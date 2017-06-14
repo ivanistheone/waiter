@@ -15,7 +15,6 @@ For the channels/WebSocket stuff, we use:
   - and the production config `config/settings/production.py`
 
 
-
 Scripts
 -------
 For the current setup on [leq.sidewayspass.com](http://leq.sidewayspass.com/)
@@ -67,6 +66,93 @@ Then run
 
     supervisorctl status
 
+
+
+NGINX config
+------------
+Create the file `/etc/nginx/sites-available/leq` and put this  in it:
+
+```
+upstream waiter_app_server {
+  # fail_timeout=0 means we always retry an upstream even if it failed
+  # to return a good HTTP response (in case the Unicorn master nukes a
+  # single worker for timing out).
+
+  server unix:/webapps/leq/run/gunicorn.sock fail_timeout=0;
+}
+
+upstream daphne_asgi_server {
+  server unix:/webapps/leq/run/daphne.sock;
+}
+
+server {
+
+    listen   80;
+    server_name leq.sidewayspass.com;
+
+    client_max_body_size 4G;
+
+    access_log /webapps/leq/logs/nginx-access.log;
+    error_log /webapps/leq/logs/nginx-error.log;
+
+     location /static/ {
+      alias   /webapps/leq/waiter/staticfiles/;
+     }
+
+    location / {
+        # an HTTP header important enough to have its own Wikipedia entry:
+        #   http://en.wikipedia.org/wiki/X-Forwarded-For
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # enable this if and only if you use HTTPS, this helps Rack
+        # set the proper protocol for doing redirects:
+        # proxy_set_header X-Forwarded-Proto https;
+
+        # pass the Host: header from the client right along so redirects
+        # can be set properly within the Rack application
+        proxy_set_header Host $http_host;
+
+        # we don't want nginx trying to do something clever with
+        # redirects, we set the Host: header above already.
+        proxy_redirect off;
+
+        # set "proxy_buffering off" *only* for Rainbows! when doing
+        # Comet/long-poll stuff.  It's also safe to set if you're
+        # using only serving fast clients with Unicorn + nginx.
+        # Otherwise you _want_ nginx to buffer responses to slow
+        # clients, really.
+        # proxy_buffering off;
+
+        # Try to serve static files from nginx, no point in making an
+        # *application* server like Unicorn/Rainbows! serve static files.
+          proxy_pass http://waiter_app_server;
+    }
+
+    # Error pages
+    error_page 500 502 503 504 /500.html;
+    location = /500.html {
+        root /webapps/leq/static/;
+    }
+
+
+    # via http://masnun.rocks/2016/11/02/deploying-django-channels-using-daphne/
+    # location ~ ^/(logs/progress)/ {
+    location /logs/ {
+        proxy_pass http://daphne_asgi_server;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_redirect     off;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Host $server_name;
+    }
+
+
+}
+```
 
 
 
