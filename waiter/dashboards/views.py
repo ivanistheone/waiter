@@ -55,7 +55,7 @@ class DashboardView(TemplateView):
             progress = REDIS.hgetall(last_run.run_id.hex)
             total_duration = sum((event.duration for event in last_run.events.all()), timedelta())
 
-            failed = any('failed' in x.name.tolower() for x in last_run.events.all())
+            failed = any('failed' in x.name.lower() for x in last_run.events.all())
 
             context['channels']['Inactive Channels'].append({
                     "channel": channel.name,
