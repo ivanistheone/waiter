@@ -38,7 +38,7 @@ function create_config(data) {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Month'
+            labelString: 'Date'
           }
         }],
         yAxes: [{
