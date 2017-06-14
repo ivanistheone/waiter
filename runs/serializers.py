@@ -72,21 +72,6 @@ class ChannelRunStageSerializer(serializers.ModelSerializer):
 
 
 
-class ChannelRunLogMessageCreateSerializer(serializers.Serializer):
-    """
-    MMVP stage reporting serializer for messages of the form:
-    {
-        'run_id': 'string'
-        'created': 1496930390.988576,       # UNIX timestamp
-        'message': 'sting'                  # the LogRecord.msg
-    }
-    """
-    run_id = serializers.UUIDField(format='hex')
-    created = serializers.FloatField()
-    message = serializers.CharField()
-
-
-
 class ChannelRunProgressSerializer(serializers.Serializer):
     """
     Run progress messages are of the form:

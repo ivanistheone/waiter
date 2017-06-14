@@ -1,5 +1,6 @@
 venv
 bar
+config/scripts
 activate
 
 ### OSX ###
@@ -70,3 +71,4 @@ waiter/media/
 staticfiles/
 
 .cache/
+sushibar_media/
