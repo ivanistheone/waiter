@@ -19,6 +19,9 @@ def connect(message):
 
 @channel_session
 def receive(message):
+    """
+    Stores logs in three files: all logs, error logs, critical logs.
+    """
     run_id = message.channel_session['run_id']
     try:
         run = ContentChannelRun.objects.get(run_id=run_id)
@@ -33,3 +36,9 @@ def receive(message):
         record['funcName'], record['lineno'], record['message'])
     with open(logfile, 'a') as f:
         f.write(log + '\n')
+    if record['levelname'] == 'ERROR':
+        with open(logfile+'.error', 'a') as f:
+            f.write(log + '\n')
+    if record['levelname'] == 'CRITICAL':
+        with open(logfile + '.critical', 'a') as f:
+            f.write(log + '\n')
