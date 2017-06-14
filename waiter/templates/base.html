@@ -57,7 +57,7 @@
               <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="true" href="#">{{ request.user.username }}<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                   <li role="presentation">
-                    <a class="nav-link" href="#">Saved Chefs</a>
+                    <a class="nav-link" href="/saved/">Saved Chefs</a>
                   </li>
                   <li role="presentation">
                     <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>

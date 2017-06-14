@@ -10,7 +10,8 @@ from waiter.errors.views import RunErrorsView
 from runs.views import RunView
 
 urlpatterns = [
-    url(r'^$', DashboardView.as_view(template_name='pages/home.html'), name='home'),
+    url(r'^$', DashboardView.as_view(), name='home'),
+    url(r'^saved/$', DashboardView.as_view(view_saved=True), name='saved'),
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
     url(r'^schedule/$', TemplateView.as_view(template_name='pages/schedule.html'), name='schedule'),
     # TODO: this is a bad regex, use a better one that matches UUID4

@@ -33,7 +33,8 @@ def get_mock(**kwargs):
 
 class DashboardView(TemplateView):
 
-    template_name = "home.html"
+    template_name = "pages/home.html"
+    view_saved = False
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
@@ -42,7 +43,8 @@ class DashboardView(TemplateView):
         context['channels'] = dict(zip(context['keys'], ([get_mock(), get_mock(channel='TESSA', restart_color='secondary'), get_mock(channel='Pratham', run_status='warning', num_errors=14), get_mock(channel='MIT', status_pct=50, status='Scraping')], [get_mock()])))
         # TODO(arvnd): This can very easily be optimized by
         # querying the runs table directly.
-        for channel in ContentChannel.objects.all():
+        queryset = self.request.user.saved_channels if self.view_saved else ContentChannel.objects
+        for channel in queryset.all():
             # TODO(arvnd): add active bit to channel model and 
             # split on that.
             try:
