@@ -16,6 +16,14 @@ class RunErrorsView(TemplateView):
         # load them in memory, we can use some file embed on S3, or 
         # at minimum track a static folder and have the client side 
         # load it.
+        logfile_path = run.logfile.path
         run.logfile.open(mode='r')
         context['logs'] = run.logfile.readlines()
+        for level in 'critical', 'error':
+            try:
+                with open("%s.%s" % (logfile_path, level)) as f:
+                    context[level] = f.readlines()
+            except OSError:
+                context[level] = []
+                continue
         return context

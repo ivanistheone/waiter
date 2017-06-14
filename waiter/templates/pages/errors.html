@@ -17,6 +17,11 @@
 
     <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
       <div class="card-block">
+        <pre class="pre-scrollable">
+          {% for logentry in critical %}
+            <span>{{logentry}}</span>
+          {% endfor %}
+        </pre>
       </div>
     </div>
   </div>
@@ -30,6 +35,11 @@
     </div>
     <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
       <div class="card-block">
+        <pre class="pre-scrollable">
+          {% for logentry in error %}
+            <span>{{logentry}}</span>
+          {% endfor %}
+        </pre>
       </div>
     </div>
   </div>
