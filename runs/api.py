@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.http import Http404
 from django.utils import timezone
-from rest_framework import status
+from rest_framework import permissions, status
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
@@ -16,6 +16,7 @@ from .serializers import ContentChannelRunSerializer
 from .serializers import ChannelRunStageCreateSerializer, ChannelRunStageSerializer
 from .serializers import ChannelRunLogMessageCreateSerializer
 from .serializers import ChannelRunProgressSerializer
+from .serializers import ContentChannelSaveToProfileSerializer
 
 
 # REDIS connection #############################################################
@@ -45,6 +46,32 @@ class ContentChannelDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = ContentChannelSerializer
     lookup_field =  'channel_id'
 
+class ContentChannelSaveToProfile(APIView):
+    """
+    Save a content channel to the user profile.
+    """
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    def post(self, request, channel_id, format=None):
+        """
+        Handle "save to profile" ajax calls.
+        """
+        try:
+            channel = ContentChannel.objects.get(channel_id=channel_id)
+        except ContentChannel.DoesNotExist:
+            raise Http404
+        serializer = ContentChannelSaveToProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            wants_saved = serializer.data['save_channel_to_profile']
+            channel_followers = channel.followers.all()
+            if wants_saved and request.user not in channel_followers:
+                channel.followers.add(request.user)
+                channel.save()
+            if not wants_saved and request.user in channel_followers:
+                channel.followers.remove(request.user)
+                channel.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # CHANNEL RUNS #################################################################
@@ -202,5 +229,4 @@ class ChannelRunProgressEndpoints(APIView):
             REDIS.hmset(run_id, serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 

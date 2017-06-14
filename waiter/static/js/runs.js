@@ -49,11 +49,58 @@ function createConfig() {
   };
 }
 
+
+$(function() {
+  // using jQuery
+  function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          var cookies = document.cookie.split(';');
+          for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  var csrftoken = getCookie('csrftoken');
+
+  // setup so CSRF token will be added to all POST requests
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (settings.type==="POST" && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+
+
+});
+
+
 $(function() {
   $('.stage-progress').tooltip();
+
+  // channel save functionality
+  var toggleSave = function(data) {
+    $('.save-icon').toggleClass('fa-star');
+    $('.save-icon').toggleClass('fa-star-o');
+  };
   $('.save-icon').click(function() {
-    $(this).toggleClass('fa-star');
-    $(this).toggleClass('fa-star-o');
+    var save_channel_url = "/api/runs/channels/" + channel_id + "/save_to_profile/";
+    if ($(this).hasClass('fa-star')) {
+      // Unfollow this channel.
+      $.post(save_channel_url, {"save_channel_to_profile": false}, toggleSave);
+    } else {
+      // Follow this channel.
+      $.post(save_channel_url, {"save_channel_to_profile": true}, toggleSave);
+      // TODO: check if successful (what if user not logged in? redirect to login page?)
+    }
   });
+
   var myLineChart = new Chart($("#resource-chart")[0].getContext('2d'), createConfig());
 });
