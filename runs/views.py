@@ -39,8 +39,8 @@ class RunView(TemplateView):
         context = super(RunView, self).get_context_data(**kwargs)
         run_id = uuid.UUID(kwargs.get('runid', ''))
         run = ContentChannelRun.objects.get(run_id=run_id)
-        # TODO(arvnd): This can very easily be optimized by
-        # querying the runs table directly.
+        # TODO(arvnd): The previous run will be wrong for any run that 
+        # is not the most recent.
         previous_run = run.channel.runs.all()[:2]
         if len(previous_run) < 2:
             previous_run = None
