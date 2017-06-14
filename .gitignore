@@ -1,5 +1,6 @@
 venv
 bar
+config/scripts
 activate
 
 ### OSX ###
