@@ -20,10 +20,33 @@ Issues with the above approach:
 */
 $('.form-group').removeClass('row');
 
-// This is super janky, remove it after creating endpoint to get
-// channels.
 $(function() {
-  if (typeof channels === 'undefined') {
-    $("#search-form").hide();
-  }
+  var channel_search = new Bloodhound({
+    datumTokenizer: function(datum) {
+      return datum["name"].split(" ");
+    },
+    identify: function(datum) {
+      return datum["channel_id"];
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote: "/api/runs/channels/"
+  });
+
+  $('#search-input').typeahead({
+    hint: true,
+    highlight: true,
+    minLength: 1
+  },
+  {
+    name: 'channel_search',
+    source: channel_search,
+    display: function(data) {
+      return data["name"];
+    },
+  });
+  // Bind to channel page url.
+  $('.typeahead').on('typeahead:select', 
+                        function(ev, suggestion) {
+      window.location.href = "/channels/" + suggestion["channel_id"] + "/";
+  });
 });
