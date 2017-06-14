@@ -31,6 +31,26 @@ resource_icons = {".mp4": "fa-video-camera", ".png": "fa-file-image-o", ".pdf": 
 
 format_duration = lambda t: str(timedelta(seconds=t.seconds))
 
+def get_run_stats(current_run_stats, previous_run_stats, format_value_fn = lambda x: x):
+    if not current_run_stats:
+        return []
+    stats = []
+    for k, v in current_run_stats.items():
+        prev_value = previous_run_stats.get(k, 0) if previous_run_stats else 0
+        bg_class = "table-default"
+        if v < prev_value:
+            bg_class = "table-danger"
+        elif v > prev_value:
+            bg_class = "table-success"
+        stats.append({
+                "icon": resource_icons.get(k, "fa-file"),
+                "name": k,
+                "value": format_value_fn(v),
+                "previous_value": format_value_fn(prev_value) if prev_value else "-",
+                "bg_class": bg_class,
+            })
+    return stats
+
 class RunView(TemplateView):
 
     template_name = "runs.html"
@@ -59,23 +79,9 @@ class RunView(TemplateView):
             stage['percentage'] = stage['duration'] / total_time * 100
             stage['duration'] = format_duration(stage['duration'])
         context['total_time'] = format_duration(total_time)
-
-        context['run_stats'] = []
-        if run.resource_counts:
-            for k, v in run.resource_counts.items():
-                prev_value = previous_run.resource_counts.get(k, 0) if previous_run.resource_counts else 0
-                bg_class = "table-default"
-                if v < prev_value:
-                    bg_class = "table-danger"
-                elif v > prev_value:
-                    bg_class = "table-success"
-                context['run_stats'].append({
-                        "icon": resource_icons.get(k, "fa-file"),
-                        "name": k,
-                        "value": v,
-                        "previous_value": prev_value if prev_value else "-",
-                        "bg_class": bg_class,
-                    })
+        
+        context['resource_counts'] = get_run_stats(run.resource_counts, previous_run.resource_counts)
+        context['resource_sizes'] = get_run_stats(run.resource_sizes, previous_run.resource_sizes, sizeof_fmt)
 
         if self.request.user in run.channel.followers.all():
             # closed star if the user has already saved this.
