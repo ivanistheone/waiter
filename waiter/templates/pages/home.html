@@ -36,7 +36,7 @@
           <td>{{channel.duration}}</td>
           <td>
             <div class="progress">
-              <div class="progress-bar progress-bar-striped bg-{{channel.run_status}}" aria-valuenow="{{channel.status_pct}}" aria-valuemin="0" aria-valuemax="100" style="color: #757575; width: {{channel.status_pct}}%;">{{channel.status}}</div>
+              <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{channel.run_status}}" role="progressbar" aria-valuenow="{{channel.status_pct}}" aria-valuemin="0" aria-valuemax="100" style="color: #757575; width: {{channel.status_pct}}%;">{{channel.status}}</div>
             </div>
           </td>
           <td><a class="btn btn-sm btn-{{channel.run_status}}" href="/errors/{{channel.last_run_id}}/">Logs  →</a></td>

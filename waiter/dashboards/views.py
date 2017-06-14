@@ -47,19 +47,20 @@ class DashboardView(TemplateView):
             progress = REDIS.hgetall(last_run.run_id.hex)
             total_duration = sum((event.duration for event in last_run.events.all()), timedelta())
 
+            fmt_pct = lambda f: int(float(f) * 100)
+
             context['channels']['Inactive Channels'].append({
                     "channel": channel.name,
                     "channel_url": "%s/%s/edit" % (channel.default_content_server, channel.channel_id),
                     "restart_color": 'secondary',
                     "stop_color": "secondary",
                     "id": channel.channel_id,
-                    "last_run": datetime.strftime(last_event.finished, "%b %w, %H:%M"),
+                    "last_run": datetime.strftime(last_event.finished, "%b %d, %H:%M"),
                     "last_run_id": last_run.run_id,
-                    # do we have an overall event or do we have to sum these?
                     "duration": str(timedelta(seconds=total_duration.seconds)),
                     "status": last_event.name.replace("Status.",""),
                     # TODO
-                    "status_pct": progress.get('progress', 0) * 100 if progress else 0,
+                    "status_pct": fmt_pct(progress.get('progress', 0)) if progress else 0,
                     "run_status": "success",
                 })
 
