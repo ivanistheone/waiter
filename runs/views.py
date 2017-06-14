@@ -80,7 +80,7 @@ class RunView(TemplateView):
                 "color": progress_bar_colors[idx % len(progress_bar_colors)]})
             total_time += stage.duration
         for stage in context['run_stages']:
-            stage['percentage'] = stage['duration'] / total_time * 100
+            stage['percentage'] = stage['duration'] / total_time * 100 if total_time.seconds > 0 else 0
             stage['duration'] = format_duration(stage['duration'])
         context['total_time'] = format_duration(total_time)
         
