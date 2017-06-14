@@ -38,10 +38,10 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 #     'DJANGO_SECURE_CONTENT_TYPE_NOSNIFF', default=True)
 SECURE_BROWSER_XSS_FILTER = True
 SESSION_COOKIE_SECURE = False
-SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = False
 # SECURE_SSL_REDIRECT = env.bool('DJANGO_SECURE_SSL_REDIRECT', default=True)
 CSRF_COOKIE_SECURE = False  # temporary disable for MMVP
-CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
 X_FRAME_OPTIONS = 'DENY'
 DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
@@ -67,7 +67,7 @@ INSTALLED_APPS += ['gunicorn', ]
 # AWS_AUTO_CREATE_BUCKET = True
 # AWS_QUERYSTRING_AUTH = False
 # AWS_S3_CALLING_FORMAT = OrdinaryCallingFormat()
-# 
+#
 # # AWS cache settings, don't change unless you know what you're doing:
 # AWS_EXPIRY = 60 * 60 * 24 * 7
 
@@ -128,7 +128,8 @@ SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 # https://docs.djangoproject.com/en/dev/ref/templates/api/#django.template.loaders.cached.Loader
 TEMPLATES[0]['OPTIONS']['loaders'] = [
     ('django.template.loaders.cached.Loader', [
-        'django.template.loaders.filesystem.Loader', 'django.template.loaders.app_directories.Loader', ]),
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',]),
 ]
 
 # DATABASE CONFIGURATION
