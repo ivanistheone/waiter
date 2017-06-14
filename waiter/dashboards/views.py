@@ -15,6 +15,14 @@ REDIS = redis.StrictRedis(host=settings.MMVP_REDIS_HOST,
                           charset="utf-8",
                           decode_responses=True)
 
+def get_status_pct(progress, failed):
+    fmt_pct = lambda f: int(float(f) * 100)
+    if failed:
+        return 100
+    if progress is None:
+        return 0
+    return fmt_pct(progress.get('progress', 0))
+
 class DashboardView(TemplateView):
 
     template_name = "pages/home.html"
@@ -47,7 +55,7 @@ class DashboardView(TemplateView):
             progress = REDIS.hgetall(last_run.run_id.hex)
             total_duration = sum((event.duration for event in last_run.events.all()), timedelta())
 
-            fmt_pct = lambda f: int(float(f) * 100)
+            failed = any('failed' in x.name.tolower() for x in last_run.events.all())
 
             context['channels']['Inactive Channels'].append({
                     "channel": channel.name,
@@ -58,10 +66,9 @@ class DashboardView(TemplateView):
                     "last_run": datetime.strftime(last_event.finished, "%b %d, %H:%M"),
                     "last_run_id": last_run.run_id,
                     "duration": str(timedelta(seconds=total_duration.seconds)),
-                    "status": last_event.name.replace("Status.",""),
-                    # TODO
-                    "status_pct": fmt_pct(progress.get('progress', 0)) if progress else 0,
-                    "run_status": "success",
+                    "status": "Failed" if failed else last_event.name.replace("Status.",""),
+                    "status_pct": get_status_pct(progress, failed),
+                    "run_status": "danger" if failed else "success",
                 })
 
         return context
