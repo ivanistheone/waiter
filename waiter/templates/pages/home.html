@@ -39,7 +39,7 @@
               <div class="progress-bar progress-bar-striped bg-{{channel.run_status}}" aria-valuenow="{{channel.status_pct}}" aria-valuemin="0" aria-valuemax="100" style="color: #757575; width: {{channel.status_pct}}%;">{{channel.status}}</div>
             </div>
           </td>
-          <td><a class="btn btn-sm btn-{{channel.run_status}}" href="/errors/{{channel.last_run_id}}/">{{channel.num_errors}}  →</a></td>
+          <td><a class="btn btn-sm btn-{{channel.run_status}}" href="/errors/{{channel.last_run_id}}/">Logs  →</a></td>
         </tr>
         {% endfor %}
       </tbody>
@@ -51,9 +51,6 @@
 {% endblock %}
 {% block javascript %}
 {{ block.super }}
-<script>
-var channels = [{{jschannels}}];
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.6.1/clipboard.min.js"></script>
 <script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

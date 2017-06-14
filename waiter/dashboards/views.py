@@ -15,22 +15,6 @@ REDIS = redis.StrictRedis(host=settings.MMVP_REDIS_HOST,
                           charset="utf-8",
                           decode_responses=True)
 
-def get_mock(**kwargs):
-    return {
-        "channel": kwargs.get('channel', 'Khan Academy'),
-        "channel_url": kwargs.get('channel_url', 'https://contentworkshop.learningequality.org/channels/ac0de44904b751adb1eac16570b41184/edit'),
-        "restart_color": kwargs.get('restart_color', 'success'),
-        "stop_color": kwargs.get('stop_color', 'danger'),
-        "id": kwargs.get('id', 1),
-        "last_run": kwargs.get('last_run', "Jun 1, 1:24 PM"),
-        "duration": kwargs.get('duration', "47:30"),
-        "status": kwargs.get('status', 'Completed'),
-        "status_pct": kwargs.get('status_pct', 100),
-        "num_errors": kwargs.get('num_errors', 0),
-        "run_status": kwargs.get('run_status', 'success'),
-        "last_run_id": 1
-    }
-
 class DashboardView(TemplateView):
 
     template_name = "pages/home.html"
@@ -38,9 +22,10 @@ class DashboardView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
-        context['keys'] = ('Active Channels', 'Inactive Channels')
-        channel_names = ['TESSA', 'Pratham', 'MIT', 'Khan Academy']
-        context['channels'] = dict(zip(context['keys'], ([get_mock(), get_mock(channel='TESSA', restart_color='secondary'), get_mock(channel='Pratham', run_status='warning', num_errors=14), get_mock(channel='MIT', status_pct=50, status='Scraping')], [get_mock()])))
+        context['channels'] = {
+            'Active Channels': [],
+            'Inactive Channels': []
+        }
         # TODO(arvnd): This can very easily be optimized by
         # querying the runs table directly.
         queryset = self.request.user.saved_channels if self.view_saved else ContentChannel.objects
@@ -75,9 +60,7 @@ class DashboardView(TemplateView):
                     "status": last_event.name.replace("Status.",""),
                     # TODO
                     "status_pct": progress.get('progress', 0) * 100 if progress else 0,
-                    "num_errors": 0,
                     "run_status": "success",
                 })
 
-        context['jschannels'] = mark_safe(','.join("\"%s\"" % s for s in channel_names))
         return context
