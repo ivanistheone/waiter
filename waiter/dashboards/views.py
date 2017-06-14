@@ -55,7 +55,7 @@ class DashboardView(TemplateView):
                     "restart_color": 'secondary',
                     "stop_color": "secondary",
                     "id": channel.channel_id,
-                    "last_run": datetime.strftime(last_event.finished, "%b %w, %H:%M"),
+                    "last_run": datetime.strftime(last_event.finished, "%b %d, %H:%M"),
                     "last_run_id": last_run.run_id,
                     "duration": str(timedelta(seconds=total_duration.seconds)),
                     "status": last_event.name.replace("Status.",""),
