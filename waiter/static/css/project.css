@@ -32,6 +32,14 @@
   }
 }
 
+.table > tbody > tr > td {
+    vertical-align: middle !important;
+}
+.table > tbody > tr > td > .progress {
+    margin-bottom: 0px !important;
+}
+
+
 /* Display django-debug-toolbar.
    See https://github.com/django-debug-toolbar/django-debug-toolbar/issues/742
    and https://github.com/pydanny/cookiecutter-django/issues/317
