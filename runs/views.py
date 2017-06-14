@@ -46,7 +46,7 @@ def get_run_stats(current_run_stats, previous_run_stats, format_value_fn = lambd
                 "icon": resource_icons.get(k, "fa-file"),
                 "name": k,
                 "value": format_value_fn(v),
-                "previous_value": prev_value if prev_value else "-",
+                "previous_value": format_value_fn(prev_value) if prev_value else "-",
                 "bg_class": bg_class,
             })
     return stats
