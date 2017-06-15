@@ -18,7 +18,6 @@ class ContentChannelSerializer(serializers.ModelSerializer):
 
 class ContentChannelRunSerializer(serializers.ModelSerializer):
     run_id = serializers.UUIDField(format='hex', read_only=True)
-    created_at = serializers.DateTimeField(read_only=True)
     channel_id = serializers.UUIDField(format='hex', write_only=True)   # need to supply channel_id when creating run
     channel = ContentChannelSerializer(read_only=True)
     # hostname ??? --> to store where sushi chef is running ???
