@@ -79,6 +79,7 @@ class RunView(TemplateView):
         else:
             previous_run = previous_run[1]
         context['channel'] = run.channel
+        context['run'] = run
         context['run_stages'] = []
         total_time = timedelta()
         for idx, stage in enumerate(run.events.order_by('finished').all()):
