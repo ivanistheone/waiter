@@ -92,8 +92,8 @@ class RunView(TemplateView):
             stage['duration'] = format_duration(stage['duration'])
         context['total_time'] = format_duration(total_time)
         
-        context['resource_counts'] = get_run_stats(run.resource_counts, previous_run.resource_counts)
-        context['resource_sizes'] = get_run_stats(run.resource_sizes, previous_run.resource_sizes, sizeof_fmt)
+        context['resource_counts'] = get_run_stats(run.resource_counts, previous_run.resource_counts if previous_run else None)
+        context['resource_sizes'] = get_run_stats(run.resource_sizes, previous_run.resource_sizes if previous_run else None, sizeof_fmt)
 
         if self.request.user in run.channel.followers.all():
             # closed star if the user has already saved this.

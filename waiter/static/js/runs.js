@@ -1,24 +1,32 @@
-function createConfig() {
+function format_date(run) {
+  var d = new Date(Date.parse(run["created_at"]));
+  return d.getMonth().toString() + "/" + d.getDay().toString();
+}
+
+function get_dataset(resource, idx, data) {
+  // Bottle Rocket and Castello Cavalcanti.
+  var colors = ["#D8B70A", "#02401B", "#A2A475", "#81A88D", "#972D15", "#FAD510", "#CB2314", "#273046", "#354823", "#1E1E1E"];
+  return {
+    label: resource,
+    data: data.map(function(x) {
+      return x.resource_counts[resource] || 0;
+    }),
+    backgroundColor: Chart.helpers.color(colors[idx]).alpha(0.5).rgbString(),
+    borderColor: colors[idx],
+    borderWidth: 1,
+    fill: false
+  }
+}
+
+function create_config(data) {
   return {
     type: 'line',
     data: {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [{
-        label: ".mp4",
-        data: [10, 20, 30, 40, 50, 60, 20],
-        backgroundColor: Chart.helpers.color("#F1BB7B").alpha(0.5).rgbString(),
-        borderColor: "#F1BB7B",
-        borderWidth: 1,
-        fill: false
-      },
-      {
-        label: ".pdf",
-        data: [14, 12, 19, 20, 25, 26, 28],
-        backgroundColor: Chart.helpers.color("#FD6467").alpha(0.5).rgbString(),
-        borderColor: "#FD6467",
-        borderWidth: 1,
-        fill: false
-      }]
+      labels: data.map(format_date),
+      datasets: Object.keys(data[0].resource_counts).map(
+        function(x, i) {
+          return get_dataset(x, i, data);
+        }),
     },
     options: {
       responsive: true,
@@ -30,7 +38,7 @@ function createConfig() {
           display: true,
           scaleLabel: {
             display: true,
-            labelString: 'Month'
+            labelString: 'Date'
           }
         }],
         yAxes: [{
@@ -91,7 +99,7 @@ $(function() {
     $('.save-icon').toggleClass('fa-star-o');
   };
   $('.save-icon').click(function() {
-    var save_channel_url = "/api/runs/channels/" + channel_id + "/save_to_profile/";
+    var save_channel_url = "/api/channels/" + channel_id + "/save_to_profile/";
     if ($(this).hasClass('fa-star')) {
       // Unfollow this channel.
       $.post(save_channel_url, {"save_channel_to_profile": false}, toggleSave);
@@ -101,6 +109,8 @@ $(function() {
       // TODO: check if successful (what if user not logged in? redirect to login page?)
     }
   });
-
-  var myLineChart = new Chart($("#resource-chart")[0].getContext('2d'), createConfig());
+  // Get chart data.
+  $.getJSON("/api/channels/" + channel_id + "/runs/", function(data) {
+    var myLineChart = new Chart($("#resource-chart")[0].getContext('2d'), create_config(data.slice(0, 10)));
+  });
 });
