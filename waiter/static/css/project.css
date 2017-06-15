@@ -3,6 +3,24 @@
   color: #F2AD00;
 }
 
+body {
+  font-family: 'Didact Gothic', sans-serif;
+}
+
+#search-icon {
+  margin-left: 20px;
+  font-size: 11px;
+}
+
+#search-input {
+  height: 30px;
+  font-family: inherit;
+}
+
+.card-title {
+  margin-bottom: 0;
+}
+
 .alert-debug {
   color: black;
   background-color: white;
@@ -46,6 +64,26 @@
 */
 [hidden][style="display: block;"] {
   display: block !important;
+}
+
+.footer-basic {
+  padding:40px 0;
+  background-color:#ffffff;
+  color:#4b4c4d;
+  text-align: center;
+}
+
+.footer-basic a {
+  color:inherit;
+  text-decoration:none;
+  opacity:0.8;
+}
+
+.footer-basic .copyright {
+  margin-top:15px;
+  font-size:13px;
+  color:#aaa;
+  margin-bottom:0;
 }
 
 /*
