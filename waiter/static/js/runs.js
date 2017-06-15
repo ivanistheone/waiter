@@ -24,7 +24,7 @@ function create_config(data) {
     data: {
       labels: data.map(format_date),
       datasets: Object.keys(data[0].resource_counts).map(
-        function(x, i) { 
+        function(x, i) {
           return get_dataset(x, i, data);
         }),
     },
@@ -99,7 +99,7 @@ $(function() {
     $('.save-icon').toggleClass('fa-star-o');
   };
   $('.save-icon').click(function() {
-    var save_channel_url = "/api/runs/channels/" + channel_id + "/save_to_profile/";
+    var save_channel_url = "/api/channels/" + channel_id + "/save_to_profile/";
     if ($(this).hasClass('fa-star')) {
       // Unfollow this channel.
       $.post(save_channel_url, {"save_channel_to_profile": false}, toggleSave);
@@ -110,7 +110,7 @@ $(function() {
     }
   });
   // Get chart data.
-  $.getJSON("/api/runs/channels/" + channel_id + "/runs/", function(data) {
+  $.getJSON("/api/channels/" + channel_id + "/runs/", function(data) {
     var myLineChart = new Chart($("#resource-chart")[0].getContext('2d'), create_config(data.slice(0, 10)));
   });
 });

@@ -29,7 +29,7 @@ $(function() {
       return datum["channel_id"];
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    remote: "/api/runs/channels/"
+    remote: "/api/channels/"
   });
 
   $('#search-input').typeahead({
@@ -45,7 +45,7 @@ $(function() {
     },
   });
   // Bind to channel page url.
-  $('.typeahead').on('typeahead:select', 
+  $('.typeahead').on('typeahead:select',
                         function(ev, suggestion) {
       window.location.href = "/channels/" + suggestion["channel_id"] + "/";
   });
