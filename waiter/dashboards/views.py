@@ -62,26 +62,15 @@ class DashboardView(TemplateView):
 
             failed = any('fail' in x.name.lower() for x in last_run.events.all())
 
-            context['channels']['Inactive Channels'].append({
+            # TODO(arvnd): check if channel is open.
+            active = bool(last_run.chef_name)
+            channel_list = context['channels']['Active Channels'] if active else context['channels']['Inactive Channels']
+
+            channel_list.append({
                     "channel": channel.name,
                     "channel_url": "%s/%s/edit" % (channel.default_content_server, channel.channel_id),
-                    "restart_color": 'secondary',
-                    "stop_color": "secondary",
-                    "id": channel.channel_id.hex,
-                    "last_run": datetime.strftime(last_event.finished, "%b %d, %H:%M"),
-                    "last_run_id": last_run.run_id,
-                    "duration": str(timedelta(seconds=total_duration.seconds)),
-                    "status": "Failed" if failed else last_event.name.replace("Status.",""),
-                    "status_pct": get_status_pct(progress, failed),
-                    "run_status": "danger" if failed else "success",
-                    "chef_name": last_run.chef_name,
-                    "cl_flags": fmt_cl_flags(last_run)
-                })
-            context['channels']['Active Channels'].append({
-                    "channel": channel.name,
-                    "channel_url": "%s/%s/edit" % (channel.default_content_server, channel.channel_id),
-                    "restart_color": 'success',
-                    "stop_color": "danger",
+                    "restart_color": 'success' if active else 'secondary',
+                    "stop_color": "danger" if active else "secondary",
                     "id": channel.channel_id.hex,
                     "last_run": datetime.strftime(last_event.finished, "%b %d, %H:%M"),
                     "last_run_id": last_run.run_id,
