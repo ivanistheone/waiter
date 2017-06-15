@@ -9,8 +9,9 @@
       </span>
       <h2>{{channel.name}}</h2>
     </div>
-    <p>Registered by: <a href="mailto:{{channel.registered_by_user}}">{{channel.registered_by_user}}</a>
-    </p>
+    <p>Registered by: <a href="mailto:{{channel.registered_by_user}}">{{channel.registered_by_user}}</a></p>
+    <p>Run by: <a href="mailto:{{run.started_by_user}}">{{run.started_by_user}}</a></p>
+    <p><a href="{{run.content_server}}/channels/{{channel.channel_id.hex}}/edit">View in Content Workshop →</a></p>
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="run-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Other Runs
