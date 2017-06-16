@@ -1,12 +1,17 @@
+import json
 import uuid
+
 from datetime import timedelta
 from datetime import time
 
 from django.conf import settings
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.base import TemplateView
 from django.utils.safestring import mark_safe
+
+import requests
 
 from .models import *
 
@@ -28,7 +33,18 @@ def sizeof_fmt(num, suffix='B'):
 
 # Darjeeling Limited
 progress_bar_colors = ["#FF0000", "#00A08A", "#F2AD00", "#F98400", "#5BBCD6", "#ECCBAE", "#046C9A", "#D69C4E", "#ABDDDE", "#000000"]
-resource_icons = {".mp4": "fa-video-camera", ".png": "fa-file-image-o", ".pdf": "fa-file-pdf-o", ".zip": "fa-file-archive-o"}
+resource_icons = {
+    ".mp4": "fa-video-camera",
+    ".png": "fa-file-image-o", 
+    ".pdf": "fa-file-pdf-o", 
+    ".zip": "fa-file-archive-o", 
+    "audio": "fa-volume-up", 
+    "topic": "fa-folder", 
+    "video": "fa-video-camera", 
+    "exercise": "fa-book",
+    "document": "fa-file-text",
+    "html5": "fa-file-code-o",
+}
 
 format_duration = lambda t: str(timedelta(seconds=t.seconds))
 
@@ -51,6 +67,21 @@ def get_run_stats(current_run_stats, previous_run_stats, format_value_fn = lambd
                 "bg_class": bg_class,
             })
     return stats
+
+def modify_data_recursively(data):
+    for root in data:
+        root["icon"] = resource_icons.get(root["kind"], "fa-file")
+        if "file_size" in root:
+            root["file_size"] = sizeof_fmt(root["file_size"])
+        if "children" in root:
+            modify_data_recursively(root["children"])
+
+
+def get_topic_tree():
+    # TODO(arvnd): hit the real endpoint.
+    data = json.load(open('waiter/static/js/example.json'))
+    modify_data_recursively(data)
+    return data
 
 class RunView(TemplateView):
     template_name = "pages/runs.html"
@@ -102,7 +133,6 @@ class RunView(TemplateView):
         else:
             context['saved_icon_class'] = 'fa-star-o'
 
-        # todo graphs
-        # todo save to my profile
+        context['topic_tree'] = get_topic_tree()
 
         return context
