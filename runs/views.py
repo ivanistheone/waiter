@@ -35,12 +35,12 @@ def sizeof_fmt(num, suffix='B'):
 progress_bar_colors = ["#FF0000", "#00A08A", "#F2AD00", "#F98400", "#5BBCD6", "#ECCBAE", "#046C9A", "#D69C4E", "#ABDDDE", "#000000"]
 resource_icons = {
     ".mp4": "fa-video-camera",
-    ".png": "fa-file-image-o", 
-    ".pdf": "fa-file-pdf-o", 
-    ".zip": "fa-file-archive-o", 
-    "audio": "fa-volume-up", 
-    "topic": "fa-folder", 
-    "video": "fa-video-camera", 
+    ".png": "fa-file-image-o",
+    ".pdf": "fa-file-pdf-o",
+    ".zip": "fa-file-archive-o",
+    "audio": "fa-volume-up",
+    "topic": "fa-folder",
+    "video": "fa-video-camera",
     "exercise": "fa-book",
     "document": "fa-file-text",
     "html5": "fa-file-code-o",
@@ -87,13 +87,12 @@ class RunView(TemplateView):
     template_name = "pages/runs.html"
     search_by_channel = False
 
-
-    @method_decorator(ensure_csrf_cookie) # via https://stackoverflow.com/a/43712324/127114
+    @method_decorator(ensure_csrf_cookie)
     def get(self, request, *args, **kwargs):
         return super(RunView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(RunView, self).get_context_data(**kwargs) 
+        context = super(RunView, self).get_context_data(**kwargs)
         run = None
         if self.search_by_channel:
             channel_id = uuid.UUID(kwargs.get('channelid', ''))
@@ -123,7 +122,7 @@ class RunView(TemplateView):
             stage['percentage'] = stage['duration'] / total_time * 100 if total_time.seconds > 0 else 0
             stage['duration'] = format_duration(stage['duration'])
         context['total_time'] = format_duration(total_time)
-        
+
         context['resource_counts'] = get_run_stats(run.resource_counts, previous_run.resource_counts if previous_run else None)
         context['resource_sizes'] = get_run_stats(run.resource_sizes, previous_run.resource_sizes if previous_run else None, sizeof_fmt)
 
