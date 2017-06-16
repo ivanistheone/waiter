@@ -1,4 +1,3 @@
-/* These styles are generated from project.scss. */
 .save-icon {
   color: #F2AD00;
 }
@@ -90,6 +89,43 @@ body {
   color: black;
 }
 
-/*
-TODO(arvnd): The z-index for the typeahead suggestion is janky
-*/
+.tt-input,
+.tt-hint {
+    width: 396px;
+    height: 30px;
+    padding: 8px 12px;
+    line-height: 30px;
+    outline: none;
+}
+
+.tt-hint {
+    color: #999;
+    margin-top: 1px;
+    font-family: inherit;
+}
+
+.tt-menu {
+    width: 350px;
+    margin-top: 12px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.tt-suggestion {
+    padding: 3px 20px;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+    margin: 0;
+}
