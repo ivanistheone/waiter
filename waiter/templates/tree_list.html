@@ -1,0 +1,14 @@
+<li><a><i class="fa {{node.icon}}"></i> {{node.title}} 
+{% if node.file_size %}
+({{node.file_size}})
+{% endif %}</a>
+{%if node.children %}
+  <ul style="display: none">
+  {%for child in node.children %}
+    {%with node=child template_name="tree_list.html" %}
+      {%include template_name%}
+    {%endwith%}
+  {%endfor%}
+  </ul>
+{%endif%}
+</li>

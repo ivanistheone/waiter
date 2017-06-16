@@ -91,16 +91,10 @@
        <h3 class="card-title">Content Tree</h3>
      </div>
      <div class="card-block">
-      <ul>
-        <li>English</li>
-        <li>Math
-          <ul>
-            <li>Multiplication</li>
-            <li>Division</li>
-          </ul>
-        </li>
-        <li>Geography</li>
-        <li>Science</li>
+      <ul class="content-tree">
+      {%for node in topic_tree %} 
+        {%include "tree_list.html" %}
+      {%endfor%}
       </ul>
     </div>
   </div>

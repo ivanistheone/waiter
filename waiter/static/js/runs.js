@@ -113,4 +113,8 @@ $(function() {
   $.getJSON("/api/channels/" + channel_id + "/runs/", function(data) {
     var myLineChart = new Chart($("#resource-chart")[0].getContext('2d'), create_config(data.slice(0, 10)));
   });
+  // Collapse content tree.
+  $('.content-tree > li a').click(function() {
+    $(this).parent().find('ul').toggle();
+  });
 });
