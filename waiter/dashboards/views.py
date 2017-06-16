@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta, timezone
-from django.conf import settings
 
-from django.views.generic.base import TemplateView
+from django.conf import settings
+from django.utils.decorators import method_decorator
 from django.utils.safestring import mark_safe
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.generic.base import TemplateView
 
 from runs.models import *
 
@@ -33,6 +35,10 @@ class DashboardView(TemplateView):
     template_name = "pages/home.html"
     view_saved = False
 
+    @method_decorator(ensure_csrf_cookie)
+    def get(self, request, *args, **kwargs):
+        return super(DashboardView, self).get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
         context['channels'] = {
@@ -43,14 +49,14 @@ class DashboardView(TemplateView):
         # querying the runs table directly.
         queryset = self.request.user.saved_channels if self.view_saved else ContentChannel.objects
         for channel in queryset.all():
-            # TODO(arvnd): add active bit to channel model and 
+            # TODO(arvnd): add active bit to channel model and
             # split on that.
             try:
                 last_run = channel.runs.latest("created_at")
             except ContentChannelRun.DoesNotExist:
                 print("No runs for channel %s " % channel.name)
                 continue
-        
+
             try:
                 last_event = last_run.events.latest("finished")
             except ChannelRunStage.DoesNotExist:

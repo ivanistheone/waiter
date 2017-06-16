@@ -92,7 +92,7 @@
      </div>
      <div class="card-block">
       <ul class="content-tree">
-      {%for node in topic_tree %} 
+      {%for node in topic_tree %}
         {%include "tree_list.html" %}
       {%endfor%}
       </ul>
@@ -109,5 +109,6 @@
 var channel_id = "{{channel.channel_id.hex}}";
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+<script src="{% static 'js/common.js' %}"></script>
 <script src="{% static 'js/runs.js' %}"></script>
 {% endblock %}
