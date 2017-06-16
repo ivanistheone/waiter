@@ -6,5 +6,5 @@ $(function() {
     setTimeout(function () {
       $(e.target).tooltip('hide');
     }, 500);
-});
+  });
 });
