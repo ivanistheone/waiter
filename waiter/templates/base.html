@@ -49,9 +49,6 @@
             <li role="presentation" class="nav-item">
               <a class="nav-link" href="{% url 'home' %}">Dashboard </a>
             </li>
-            <li role="presentation" class="nav-item">
-              <a class="nav-link" href="{% url 'schedule' %}">Schedule</a>
-            </li>
               {% if request.user.is_authenticated %}
               <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="true" href="#">{{ request.user.username }}<span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
