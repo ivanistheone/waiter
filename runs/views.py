@@ -77,10 +77,20 @@ def modify_data_recursively(data):
             modify_data_recursively(root["children"])
 
 
-def get_topic_tree():
+def get_topic_tree(run):
     # TODO(arvnd): hit the real endpoint.
-    data = json.load(open('waiter/static/js/example.json'))
-    modify_data_recursively(data)
+    r = requests.post(
+        "%s/api/internal/get_tree_data" % run.content_server, 
+        data=json.dumps({
+            "channel_id" : run.channel.channel_id.hex,
+            }),
+        headers={
+            'Authorization': 'Token %s' % run.started_by_user_token, 
+            'Content-Type': 'application/json'})
+    data = []
+    if r.ok:
+        data = r.json().get("tree", [])
+        modify_data_recursively(data)
     return data
 
 class RunView(TemplateView):
@@ -132,6 +142,6 @@ class RunView(TemplateView):
         else:
             context['saved_icon_class'] = 'fa-star-o'
 
-        context['topic_tree'] = get_topic_tree()
+        context['topic_tree'] = get_topic_tree(run)
 
         return context
