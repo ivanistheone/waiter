@@ -217,14 +217,12 @@ class ChannelControlEndpoints(APIView):
         """
         serializer = ChannelControlSerializer(data=request.data)
         if serializer.is_valid():
-            print('Received command from frontend', serializer.data)
             group = Group('control-' + channel_id)
             msg_dict = dict(
                 command=serializer.data['command'],
                 options=serializer.data['options']
             )
             msg_text = json.dumps(msg_dict)
-            print('Sending', msg_text, 'to group', group.name)
             group.send({'text': msg_text})
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
