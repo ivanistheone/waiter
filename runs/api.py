@@ -227,5 +227,7 @@ class ChannelControlEndpoints(APIView):
             print('Sending', msg_text, 'to group', group.name)
             group.send({'text': msg_text})
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
