@@ -78,20 +78,20 @@ def modify_data_recursively(data):
 
 
 def get_topic_tree(run):
-    # TODO(arvnd): hit the real endpoint.
-    r = requests.post(
-        "%s/api/internal/get_tree_data" % run.content_server, 
-        data=json.dumps({
-            "channel_id" : run.channel.channel_id.hex,
-            }),
-        headers={
-            'Authorization': 'Token %s' % run.started_by_user_token, 
-            'Content-Type': 'application/json'})
     data = []
+    try:
+        r = requests.post(
+                "%s/api/internal/get_tree_data" % run.content_server,
+                data=json.dumps({"channel_id" : run.channel.channel_id.hex,}),
+                headers={'Authorization': 'Token %s' % run.started_by_user_token,
+                         'Content-Type': 'application/json'})
+    except requests.ConnectionError:
+        pass
     if r.ok:
         data = r.json().get("tree", [])
         modify_data_recursively(data)
     return data
+
 
 class RunView(TemplateView):
     template_name = "pages/runs.html"
