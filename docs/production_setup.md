@@ -136,8 +136,7 @@ server {
 
 
     # via http://masnun.rocks/2016/11/02/deploying-django-channels-using-daphne/
-    # location ~ ^/(logs/progress)/ {
-    location /logs/ {
+    location ~ ^/(logs|progress|control)/ {
         proxy_pass http://daphne_asgi_server;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
