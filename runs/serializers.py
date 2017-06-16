@@ -91,3 +91,12 @@ class ContentChannelSaveToProfileSerializer(serializers.Serializer):
     A true/false single-field serializer for saving channel to profile.
     """
     save_channel_to_profile = serializers.BooleanField()
+
+class ChannelControlSerializer(serializers.Serializer):
+    """
+    Handles POSTs of control commands.
+    """
+    command = serializers.CharField()
+    options = serializers.JSONField()
+
+

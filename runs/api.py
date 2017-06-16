@@ -1,5 +1,6 @@
 
 from datetime import timedelta
+import json
 
 from django.conf import settings
 from django.http import Http404
@@ -9,6 +10,7 @@ from rest_framework.generics import ListCreateAPIView
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from channels import Group
 
 from .models import ContentChannel, ContentChannelRun, ChannelRunStage
 from .serializers import ContentChannelSerializer
@@ -16,7 +18,7 @@ from .serializers import ContentChannelRunSerializer
 from .serializers import ChannelRunStageCreateSerializer, ChannelRunStageSerializer
 from .serializers import ChannelRunProgressSerializer
 from .serializers import ContentChannelSaveToProfileSerializer
-
+from .serializers import ChannelControlSerializer
 
 # REDIS connection #############################################################
 import redis
@@ -203,5 +205,27 @@ class ChannelRunProgressEndpoints(APIView):
         if serializer.is_valid():
             REDIS.hmset(run_id, serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class ChannelControlEndpoints(APIView):
+
+    def post(self, request, channel_id, format=None):
+        """
+        Store progress update to redis.
+        """
+        serializer = ChannelControlSerializer(data=request.data)
+        if serializer.is_valid():
+            print('Received command from frontend', serializer.data)
+            group = Group('control-' + channel_id)
+            msg_dict = dict(
+                'command': serializer.data['command'],
+                'options': serializer.data['options']
+            )
+            msg_text = json.dumps(msg_dict)
+            print('Sending', msg_text, 'to group', group.name)
+            group.send({'text': msg_text})
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
