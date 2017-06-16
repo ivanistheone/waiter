@@ -1,6 +1,5 @@
 function format_date(run) {
-  var d = new Date(Date.parse(run["created_at"]));
-  return d.getMonth().toString() + "/" + d.getDay().toString();
+  return moment(run["created_at"]).format("MMM D");
 }
 
 function get_dataset(resource, idx, data) {
