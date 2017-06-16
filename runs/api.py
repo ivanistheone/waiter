@@ -220,8 +220,8 @@ class ChannelControlEndpoints(APIView):
             print('Received command from frontend', serializer.data)
             group = Group('control-' + channel_id)
             msg_dict = dict(
-                'command': serializer.data['command'],
-                'options': serializer.data['options']
+                command=serializer.data['command'],
+                options=serializer.data['options']
             )
             msg_text = json.dumps(msg_dict)
             print('Sending', msg_text, 'to group', group.name)

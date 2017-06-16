@@ -6,6 +6,7 @@ from .api import ContentChannelRunListCreate, ContentChannelRunDetail
 from .api import ChannelRunStageListCreate
 from .api import ChannelRunProgressEndpoints
 from .api import ContentChannelSaveToProfile
+from .api import ChannelControlEndpoints
 
 urlpatterns = [
     url(regex=r'channels/$',
