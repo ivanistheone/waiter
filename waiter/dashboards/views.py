@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timedelta, timezone
 
 from django.conf import settings
@@ -29,6 +30,12 @@ def fmt_cl_flags(run):
     if not run.extra_options:
         return ""
     return " ".join("--%s=%s" % (k, v) for k, v in run.extra_options.items())
+
+def make_chef_link(chef_name):
+    return re.sub(r'git:[\w\d]+$', 'git', chef_name).replace("git+ssh://git@", "https://")
+
+def fmt_chef_name(chef_name):
+    return re.sub(r'git:[\w\d]+$', 'git', chef_name).replace("github.com","").replace("https://", "").replace("git+ssh://git@", "")
 
 class DashboardView(TemplateView):
 
@@ -84,7 +91,8 @@ class DashboardView(TemplateView):
                     "status": "Failed" if failed else last_event.name.replace("Status.",""),
                     "status_pct": get_status_pct(progress, failed),
                     "run_status": "danger" if failed else "success",
-                    "chef_name": last_run.chef_name,
+                    "chef_name": fmt_chef_name(last_run.chef_name),
+                    "chef_link": make_chef_link(last_run.chef_name),
                     "cl_flags": fmt_cl_flags(last_run)
                 })
 
