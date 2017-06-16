@@ -84,7 +84,7 @@ $(function() {
       $("#resource-chart")[0].getContext('2d'), 
       create_config(
         data.filter(function(x) {
-          return x.resource_counts !== undefined;
+          return x.resource_counts !== undefined && x.resource_counts !== null;
         }).slice(0, 10)));
   });
   // Collapse content tree.
