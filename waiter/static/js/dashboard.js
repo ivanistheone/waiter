@@ -12,7 +12,6 @@ $(function() {
 
 $(function() {
   var start_channel_handler = function (channel_id) {
-      console.log('calling channel control/ endpoint');
 
       var toggleRestartButton = function () {
           button_el = $('*[data-target="#restart-'+channel_id+'-modal"]');
