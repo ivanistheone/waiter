@@ -89,10 +89,6 @@ body {
   color: black;
 }
 
-/*
-TODO(arvnd): The z-index for the typeahead suggestion is janky
-*/
-
 .tt-input,
 .tt-hint {
     width: 396px;
