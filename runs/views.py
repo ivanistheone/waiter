@@ -85,11 +85,11 @@ def get_topic_tree(run):
                 data=json.dumps({"channel_id" : run.channel.channel_id.hex,}),
                 headers={'Authorization': 'Token %s' % run.started_by_user_token,
                          'Content-Type': 'application/json'})
-    except requests.ConnectionError:
+        if r.ok:
+            data = r.json().get("tree", [])
+            modify_data_recursively(data)
+    except requests.ConnectionError:  # fallback when can't reach cc server
         pass
-    if r.ok:
-        data = r.json().get("tree", [])
-        modify_data_recursively(data)
     return data
 
 
